@@ -4,9 +4,22 @@ import { updateStoredChat } from "./util";
  * message object in the chat array. */
 function Message({ userId, messageObj }) {
     const msgType = userId === messageObj.sender ? "msg-sent" : "msg-recv";
+    const date = new Date(messageObj.timestamp);
+    const timestamp = new Intl.DateTimeFormat(
+        undefined, {
+            year: "numeric",
+            month: "short",
+            day: "2-digit",
+            hour: "2-digit",
+            minute: "2-digit"
+        }
+    ).format(date);
     return (
-        <div className={"message " + msgType}>
-            {messageObj.text}
+        <div className={"message-wrapper " + msgType}>
+            <p className="msg-timestamp">{timestamp}</p>
+            <div className="message-body">
+                {messageObj.text}
+            </div>
         </div>
     );
 }
@@ -25,16 +38,19 @@ export function ChatWindow({ userData, activeContact, chat, setChat, contacts, s
     function handleSubmit() {
         const message = contactData.currentMessage;
         if (message) {
+            const timestamp = Date.now();
             const sentMessage = {
                 msgId: chat.length,
                 sender: userData.id,
                 receiver: activeContact,
+                timestamp: timestamp, 
                 text: message
             };
             const reply = {
                 msgId: chat.length + 1,
                 sender: activeContact,
                 receiver: userData.id,
+                timestamp: timestamp,
                 text: contactData.replyFn(message)
             };
             const nextChat = [...chat, sentMessage, reply];

@@ -13,7 +13,7 @@ export function ContactsPanel({ contactsList, onContactSelect, activeContact }) 
     });
 
     return (
-        <div className="contacts-panel box">
+        <div className="side-panel contacts-panel box">
             {contacts}
         </div>
     );

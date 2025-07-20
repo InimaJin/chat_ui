@@ -22,7 +22,7 @@ export function UserPanel({ userData, handleLogin, handleLogout }) {
 
 
     return (
-        <div className={`box user-panel`}>
+        <div className={`side-panel user-panel box`}>
             {content}
         </div>
     );
