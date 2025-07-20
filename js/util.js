@@ -21,9 +21,13 @@ export function loadCachedUsername() {
     return localStorage.getItem("cached_username");
 }
 
-export function updateUserData(userData) {
-    let data = JSON.stringify(userData);
-    localStorage.setItem(`${userData.name}_user`, data);
+export function updateUserData(username, userData) {
+    if (!userData) {
+        localStorage.removeItem(`${username}_user`);
+    } else {
+        let data = JSON.stringify(userData);
+        localStorage.setItem(`${username}_user`, data);
+    }
 }
 
 export function loadUserData(username) {

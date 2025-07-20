@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { loadUserData, updateUserData, loadStoredChat, totalUsersCount, incrementUsersCount, loadCachedUsername, updateUsernameCache } from "./util.js";
 import { ContactsPanel } from "./contacts.jsx";
 import { ChatWindow } from "./chat.jsx";
-import { UserPanel } from "./user.jsx";
+import { UserPanel, UserProfilePage } from "./user.jsx";
 import { contactsData } from "./data.js";
 
 
@@ -11,6 +11,7 @@ import { contactsData } from "./data.js";
 function MainWindow({ children, userData, setUserData, activeContact, setActiveContact, setChat, contacts }) {
     const [showLogin, setShowLogin] = useState(false);
     const [usernameInput, setUsernameInput] = useState("");
+    const [showUserProfilePage, setShowUserProfilePage] = useState(false);
 
     function fetchChat(contactId) {
         if (contactId === activeContact) return;
@@ -27,14 +28,15 @@ function MainWindow({ children, userData, setUserData, activeContact, setActiveC
         let loginUser = {
             id: totalUsersCount(),
             name: usernameInput,
-            profileImg: "/img/default_profile_pic.png"
+            profileImg: "/img/default_profile_pic.png",
+            about: ""
         };
 
         const loadedUser = loadUserData(usernameInput);
         if (loadedUser) {
             loginUser = loadedUser;
         } else {
-            updateUserData(loginUser);
+            updateUserData(usernameInput, loginUser);
             incrementUsersCount(1);
         }
         
@@ -45,12 +47,22 @@ function MainWindow({ children, userData, setUserData, activeContact, setActiveC
         setChat(storedChat);
     }
 
+
     let content;
     if (userData) {
         content = ( 
             <>
-                <ContactsPanel contactsList={contacts} onContactSelect={fetchChat} activeContact={activeContact} />
-                {children}
+                <ContactsPanel contactsList={contacts} onContactSelect={(nextContactId)=>{
+                    fetchChat(nextContactId);
+                    setShowUserProfilePage(false);
+                }} activeContact={activeContact} />
+                {showUserProfilePage ? <UserProfilePage userData={userData} setShowUserProfilePage={setShowUserProfilePage} onSave={(newData) => {
+                    setUserData(newData);
+                    updateUserData(userData.name, null);
+                    updateUserData(newData.name, newData);
+                    updateUsernameCache(newData.name);
+                    setShowUserProfilePage(false);
+                }} /> : children}
             </>
         );
     } else if (showLogin) {
@@ -76,6 +88,8 @@ function MainWindow({ children, userData, setUserData, activeContact, setActiveC
                 }} handleLogout={()=>{
                     setUserData(null);
                     updateUsernameCache(null);
+                }} toggleUserProfile={()=>{
+                    setShowUserProfilePage(!showUserProfilePage);
                 }} />
             </div>
         </>
