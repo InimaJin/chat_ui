@@ -33,7 +33,7 @@ export function UserPanel({ userData, handleLogin, handleLogout, toggleUserProfi
 }
 
 
-export function UserProfilePage({ userData, setShowUserProfilePage, onSave }) {
+export function UserProfilePage({ isUser, userData, setShowUserProfilePage, onSave }) {
     const [userInput, setUserInput] = useState(userData);
 
     return (
@@ -42,26 +42,40 @@ export function UserProfilePage({ userData, setShowUserProfilePage, onSave }) {
                 <div className="profile-img-wrapper">
                     <img src={userData.profileImg} alt="profile picture" />
                 </div>
-                <input value={userInput.name} className="profile-username-input" placeholder="new username..." 
-                    onChange={(e) => setUserInput({...userInput, name: e.target.value}) }/>
-                <input value={userInput.profileImg} className="profile-img-input" placeholder="img url..."
-                    onChange={(e) => setUserInput({...userInput, profileImg: e.target.value}) }/>
+                {isUser ?
+                    <>
+                        <input value={userInput.name} className="profile-username-input" placeholder="new username..." 
+                            onChange={(e) => setUserInput({...userInput, name: e.target.value}) }/>
+                        <input value={userInput.profileImg} className="profile-img-input" placeholder="img url..."
+                            onChange={(e) => setUserInput({...userInput, profileImg: e.target.value}) }/>
+                    </>
+                        :
+                    <>
+                        <h2>{userData.name}</h2>
+                    </>
+                }
             </div>
-            <textarea value={userInput.about} placeholder="write a poem about yourself..."
-                onChange={(e) => setUserInput({...userInput, about: e.target.value}) }/>
-            <div className="edit-buttons">
-                <button onClick={()=>{
-                    onSave(userInput);
-                }}>
-                    Apply
-                </button> 
-                <button onClick={()=>{
-                    setUserInput(userData);
-                    setShowUserProfilePage(false);
-                }}>
-                    Cancel
-                </button> 
-            </div>
+            {isUser ?
+                <>
+                    <textarea value={userInput.about} placeholder="write a poem about yourself..."
+                        onChange={(e) => setUserInput({...userInput, about: e.target.value}) }/>
+                    <div className="edit-buttons">
+                        <button onClick={()=>{
+                            onSave(userInput);
+                        }}>
+                            Apply
+                        </button> 
+                        <button onClick={()=>{
+                            setUserInput(userData);
+                            setShowUserProfilePage(null);
+                        }}>
+                            Cancel
+                        </button> 
+                    </div>
+                </>
+                    :
+                <p>{userData.about}</p>
+            }
         </div>
     );
 }

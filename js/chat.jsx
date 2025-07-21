@@ -36,7 +36,7 @@ export function ChatWindow({ userData, activeContact, chat, setChat, contacts, s
     }
 
     function handleSubmit() {
-        const message = contactData.currentMessage;
+        const message = contactData.currentMessage.trim();
         if (message) {
             const timestamp = Date.now();
             const sentMessage = {

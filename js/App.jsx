@@ -11,10 +11,9 @@ import { contactsData } from "./data.js";
 function MainWindow({ children, userData, setUserData, activeContact, setActiveContact, setChat, contacts }) {
     const [showLogin, setShowLogin] = useState(false);
     const [usernameInput, setUsernameInput] = useState("");
-    const [showUserProfilePage, setShowUserProfilePage] = useState(false);
+    const [showUserProfilePage, setShowUserProfilePage] = useState(null);
 
     function fetchChat(contactId) {
-        if (contactId === activeContact) return;
         const storedChat = loadStoredChat(userData.id, contactId);
         setChat(storedChat);
         setActiveContact(contactId);
@@ -53,16 +52,25 @@ function MainWindow({ children, userData, setUserData, activeContact, setActiveC
         content = ( 
             <>
                 <ContactsPanel contactsList={contacts} onContactSelect={(nextContactId)=>{
-                    fetchChat(nextContactId);
-                    setShowUserProfilePage(false);
+                    if (activeContact !== nextContactId) {
+                        fetchChat(nextContactId);
+                        setShowUserProfilePage(null);
+                    } else {
+                        setShowUserProfilePage(showUserProfilePage === null ? nextContactId : null);
+                    }
                 }} activeContact={activeContact} />
-                {showUserProfilePage ? <UserProfilePage userData={userData} setShowUserProfilePage={setShowUserProfilePage} onSave={(newData) => {
-                    setUserData(newData);
-                    updateUserData(userData.name, null);
-                    updateUserData(newData.name, newData);
-                    updateUsernameCache(newData.name);
-                    setShowUserProfilePage(false);
-                }} /> : children}
+                {showUserProfilePage !== null ? 
+                    <UserProfilePage isUser={showUserProfilePage===userData.id} userData={showUserProfilePage===userData.id? userData : contacts.find(c=>c.id===showUserProfilePage)}
+                        setShowUserProfilePage={setShowUserProfilePage} onSave={(newData) => {
+                            setUserData(newData);
+                            updateUserData(userData.name, null);
+                            updateUserData(newData.name, newData);
+                            updateUsernameCache(newData.name);
+                            setShowUserProfilePage(null);
+                    }} />
+                    :
+                    children
+                }
             </>
         );
     } else if (showLogin) {
@@ -89,7 +97,7 @@ function MainWindow({ children, userData, setUserData, activeContact, setActiveC
                     setUserData(null);
                     updateUsernameCache(null);
                 }} toggleUserProfile={()=>{
-                    setShowUserProfilePage(!showUserProfilePage);
+                    setShowUserProfilePage(showUserProfilePage === null ? userData.id : null);
                 }} />
             </div>
         </>
