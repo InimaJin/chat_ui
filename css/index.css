@@ -11,6 +11,18 @@ button {
   cursor: pointer;
 }
 
+.hover-btn {
+  background: transparent;
+  color: white;
+  border: none;
+  outline: none;
+  transition: .3s ease-in-out;
+}
+.hover-btn:hover {
+  background: white;
+  color: black;
+}
+
 .main-window {
   width: 100vw;
   height: 100vh;
@@ -192,13 +204,6 @@ button {
   aspect-ratio: 1 / 1;
   width: 40%;
   border-radius: 50%;
-  background: transparent;
-  color: white;
-  transition: .2s ease-in-out;
-}
-.send-btn:hover {
-  background: white;
-  color: black;
 }
 
 .send-btn i {
@@ -216,10 +221,11 @@ button {
   flex-flow: column;
   align-items: center;
   justify-content: center;
-  gap: 4vh;
+  gap: 6vh;
 }
 
 .user-profile-edit {
+  width: 45%;
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-template-rows: 5fr 1fr;
@@ -244,7 +250,9 @@ button {
   background: transparent;
   border: none;
   outline: none;
-  border-bottom: 2px solid white;
+  border-bottom: 2px solid #3c3c3f;
+  border-radius: 12%;
+  padding-bottom: 4px;
   color: white;
   font-size: 1.2rem;
   text-align: center;
@@ -260,37 +268,37 @@ button {
 }
 
 .user-profile-page textarea {
-  width: 40%;
+  width: 45%;
   height: 45%;
   background: rgba(0, 0, 0, 0.0178);
-  border: 2px solid white;
+  border: 2px solid #3c3c3f;
   border-radius: 6px;
   color: white;
   font-size: 1.2rem;
-  padding: 6px;
+  padding: 16px;
   resize: none;
   outline: none;
 }
 
+
+.user-profile-edit input, .user-profile-page textarea {
+  transition: border .3s ease-in-out;;
+}
+.user-profile-edit input:focus, .user-profile-page textarea:focus {
+  border-color: white;
+}
+
 .edit-buttons {
-  width: 40%;
+  width: 45%;
   display: flex;
   justify-content: space-evenly;
   align-items: center;
 }
 .edit-buttons button {
-  background: transparent;
   border: white;
-  outline: none;
-  color: white;
-  transition: .2s ease-in-out;
   padding: 6px;
   border-radius: 6px;
   font-size: 1rem;
-}
-.edit-buttons button:hover {
-  background: white;
-  color: black;
 }
 
 .user-profile-edit h2 {
@@ -320,19 +328,10 @@ button {
   border-radius: 50%;
   width: 40%;
   aspect-ratio: 1 / 1;
-  background: transparent;
-  border: none;
-  color: white;
-  transition: .3s ease-in-out;
   font-size: 1.2rem;
   font-weight: 600;
   user-select: none;
   z-index: 1;
-}
-.login-wrapper button:hover {
-  background: white;
-  border: 2px solid white;
-  color: black;
 }
 
 .user-profile {
@@ -360,18 +359,10 @@ button {
   aspect-ratio: 1 / 1;
   border-radius: 50%;
   align-self: end;
-  border: none;
-  background: transparent;
-  color: white;
   padding: 8px;
   display: flex;
   justify-content: center;
   align-items: center;
-  transition: .2s ease-in-out;
-}
-.logout-btn:hover {
-  background: white;
-  color: black;
 }
 .logout-btn i {
   font-size: 1.5rem;

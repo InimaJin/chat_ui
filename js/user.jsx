@@ -11,7 +11,7 @@ export function UserPanel({ userData, handleLogin, handleLogout, toggleUserProfi
                         <img src={userData.profileImg} alt="Profile picture" />
                     </a>
                 </div>
-                <button onClick={handleLogout} className="logout-btn">
+                <button onClick={handleLogout} className="logout-btn hover-btn">
                     <i className='bxr bx-door'></i> 
                 </button>
             </>
@@ -19,7 +19,7 @@ export function UserPanel({ userData, handleLogin, handleLogout, toggleUserProfi
     } else {
         content = (
             <div className="login-wrapper">
-                <button onClick={handleLogin}>Login</button>
+                <button className="hover-btn" onClick={handleLogin}>Login</button>
             </div>
         );
     }
@@ -60,15 +60,15 @@ export function UserProfilePage({ isUser, userData, setShowUserProfilePage, onSa
                     <textarea value={userInput.about} placeholder="write a poem about yourself..."
                         onChange={(e) => setUserInput({...userInput, about: e.target.value}) }/>
                     <div className="edit-buttons">
-                        <button onClick={()=>{
+                        <button  onClick={()=>{
                             onSave(userInput);
-                        }}>
+                        }} className="hover-btn">
                             Apply
                         </button> 
                         <button onClick={()=>{
                             setUserInput(userData);
                             setShowUserProfilePage(null);
-                        }}>
+                        }} className="hover-btn">
                             Cancel
                         </button> 
                     </div>
