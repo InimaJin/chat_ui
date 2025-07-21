@@ -79,7 +79,7 @@ function MainWindow({ children, userData, setUserData, activeContact, setActiveC
                 <input placeholder="username..." autoFocus value={usernameInput} onChange={(e)=>{
                     setUsernameInput(e.target.value);
                 }} />
-                <button className={usernameInput ? "" : "hide"} type="submit" onClick={(e)=>{
+                <button className={usernameInput.trim() ? "" : "hide"} type="submit" onClick={(e)=>{
                     e.preventDefault();
                     handleLogin();
                 }}><i className='bxr  bx-rocket'  ></i> </button>
