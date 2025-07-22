@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 import { loadUserData, updateUserData, loadStoredChat, totalUsersCount, incrementUsersCount, loadCachedUsername, updateUsernameCache } from "./util.js";
 import { ContactsPanel } from "./contacts.jsx";
@@ -105,21 +105,10 @@ function MainWindow({ children, userData, setUserData, activeContact, setActiveC
 }
 
 export default function App() {
-    const [userData, setUserData] = useState(null);
+    const [userData, setUserData] = useState(loadUserData(loadCachedUsername()));
     const [contacts, setContacts] = useState(contactsData);
     const [activeContactId, setActiveContactId] = useState(-1);
-    const [chat, setChat] = useState([]);
-
-    //Attempt automatic login
-    useEffect(()=>{
-        const cachedUsername = loadCachedUsername();
-        if (cachedUsername) {
-            const data = loadUserData(cachedUsername);
-            setUserData(data);
-            setChat(loadStoredChat(data.id, activeContactId));
-        }
-    }, []);
-
+    const [chat, setChat] = useState(userData ? loadStoredChat(userData.id, activeContactId) : []);
 
     const data = {
         userData: userData, setUserData: setUserData,
