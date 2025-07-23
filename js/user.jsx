@@ -1,6 +1,10 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
+import { DisplayModeCtx } from "./context";
+import { updateUserData } from "./util";
 
-export function UserPanel({ userData, handleLogin, handleLogout, toggleUserProfile }) {
+export function UserPanel({ userData, setUserData, handleLogin, handleLogout, toggleUserProfile }) {
+    const {displayMode, setDisplayMode} = useContext(DisplayModeCtx);    
+
     let content;
     if (userData) {
         content = (
@@ -11,15 +15,28 @@ export function UserPanel({ userData, handleLogin, handleLogout, toggleUserProfi
                         <img src={userData.profileImg} alt="Profile picture" />
                     </a>
                 </div>
-                <button onClick={handleLogout} className="logout-btn hover-btn">
-                    <i className='bxr bx-door'></i> 
-                </button>
+                <div className="user-buttons">
+                    <button 
+                    className="hover-btn round-btn"
+                    onClick={() => {
+                        const nextMode = displayMode === "dark-mode" ? "light-mode" : "dark-mode"; 
+                        setDisplayMode(nextMode);
+                        const nextUserData = {...userData, displayMode: nextMode};
+                        setUserData(nextUserData);
+                        updateUserData(userData.name, nextUserData);
+                    }}>
+                        <i className={`bxr  bx-${displayMode === "dark-mode" ? "sun" : "moon-star"}`}></i>  
+                    </button>
+                    <button onClick={handleLogout} className="hover-btn round-btn">
+                        <i className='bxr bx-door'></i> 
+                    </button>
+                </div>
             </>
         );
     } else {
         content = (
             <div className="login-wrapper">
-                <button className="hover-btn" onClick={handleLogin}>Login</button>
+                <button className="hover-btn round-btn" onClick={handleLogin}>Login</button>
             </div>
         );
     }
@@ -36,8 +53,10 @@ export function UserPanel({ userData, handleLogin, handleLogout, toggleUserProfi
 export function UserProfilePage({ isUser, userData, setShowUserProfilePage, onSave }) {
     const [userInput, setUserInput] = useState(userData);
 
+    const displayMode = useContext(DisplayModeCtx).displayMode;
+
     return (
-        <div className="user-profile-page">
+        <div className={"user-profile-page " + displayMode}>
             <div className="user-profile-edit">
                 <div className="profile-img-wrapper">
                     <img src={userData.profileImg} alt="profile picture" />

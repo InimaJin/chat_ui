@@ -32,8 +32,7 @@ export function updateUserData(username, userData) {
 
 export function loadUserData(username) {
     let userData = localStorage.getItem(`${username}_user`);
-    userData = userData !== null ? JSON.parse(userData) : null;
-    return userData;
+    return userData !== null ? JSON.parse(userData) : null;
 }
 
 

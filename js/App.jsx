@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 
+import { DisplayModeCtx } from "./context.jsx";
 import { loadUserData, updateUserData, loadStoredChat, totalUsersCount, incrementUsersCount, loadCachedUsername, updateUsernameCache } from "./util.js";
 import { ContactsPanel } from "./contacts.jsx";
 import { ChatWindow } from "./chat.jsx";
@@ -9,30 +10,33 @@ import { contactsData } from "./data.js";
 
 /* The primary application window. */
 function MainWindow({ children, userData, setUserData, activeContact, setActiveContact, setChat, contacts }) {
-    const [showLogin, setShowLogin] = useState(false);
+    const {displayMode, setDisplayMode} = useContext(DisplayModeCtx);
+
+    const [showLoginForm, setShowLogin] = useState(false);
     const [usernameInput, setUsernameInput] = useState("");
     const [showUserProfilePage, setShowUserProfilePage] = useState(null);
 
-    function fetchChat(contactId) {
-        const storedChat = loadStoredChat(userData.id, contactId);
+    function fetchChat(nextContactId) {
+        const storedChat = loadStoredChat(userData.id, nextContactId);
         setChat(storedChat);
-        setActiveContact(contactId);
     }
 
     function handleLogin() {
         if (usernameInput.length === 0) return;
         setUsernameInput("");
-        setShowLogin(!showLogin);
+        setShowLogin(!showLoginForm);
 
         let loginUser = {
             id: totalUsersCount(),
             name: usernameInput,
             profileImg: "/img/default_profile_pic.png",
-            about: ""
+            about: "",
+            displayMode: "dark-mode"
         };
 
         const loadedUser = loadUserData(usernameInput);
         if (loadedUser) {
+            setDisplayMode(loadedUser.displayMode);
             loginUser = loadedUser;
         } else {
             updateUserData(usernameInput, loginUser);
@@ -54,6 +58,7 @@ function MainWindow({ children, userData, setUserData, activeContact, setActiveC
                 <ContactsPanel contactsList={contacts} onContactSelect={(nextContactId)=>{
                     if (activeContact !== nextContactId) {
                         fetchChat(nextContactId);
+                        setActiveContact(nextContactId);
                         setShowUserProfilePage(null);
                     } else {
                         setShowUserProfilePage(showUserProfilePage === null ? nextContactId : null);
@@ -73,7 +78,7 @@ function MainWindow({ children, userData, setUserData, activeContact, setActiveC
                 }
             </>
         );
-    } else if (showLogin) {
+    } else if (showLoginForm) {
         content = (
             <form className="login-form">
                 <input placeholder="username..." autoFocus value={usernameInput} onChange={(e)=>{
@@ -82,23 +87,24 @@ function MainWindow({ children, userData, setUserData, activeContact, setActiveC
                 <button className={usernameInput.trim() ? "" : "hide"} type="submit" onClick={(e)=>{
                     e.preventDefault();
                     handleLogin();
-                }}><i className='bxr  bx-rocket'  ></i> </button>
+                }}><i className='bxr  bx-rocket'  ></i></button>
             </form>
         );
     }
 
     return (
         <>
-            <div className="main-window">
+            <div className={"main-window " + displayMode}>
                 {content}
                 <UserPanel userData={userData} handleLogin={()=>{
-                    setShowLogin(!showLogin)
+                    setShowLogin(!showLoginForm)
                 }} handleLogout={()=>{
                     setUserData(null);
                     updateUsernameCache(null);
                 }} toggleUserProfile={()=>{
                     setShowUserProfilePage(showUserProfilePage === null ? userData.id : null);
-                }} />
+                }}
+                setUserData={setUserData}/>
             </div>
         </>
     );
@@ -110,6 +116,8 @@ export default function App() {
     const [activeContactId, setActiveContactId] = useState(-1);
     const [chat, setChat] = useState(userData ? loadStoredChat(userData.id, activeContactId) : []);
 
+    const [displayMode, setDisplayMode] = useState(userData ? userData.displayMode : "dark-mode");
+
     const data = {
         userData: userData, setUserData: setUserData,
         activeContact: activeContactId, setActiveContact: setActiveContactId,
@@ -118,10 +126,10 @@ export default function App() {
     };
 
     return (
-        <>
+        <DisplayModeCtx value={ {displayMode: displayMode, setDisplayMode: setDisplayMode} }  >
             <MainWindow {...data}>
                 <ChatWindow {...data} />
             </MainWindow>
-        </>
+        </DisplayModeCtx>
     );
 }

@@ -23,6 +23,16 @@ button {
   color: black;
 }
 
+.round-btn {
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  padding: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.5rem;
+}
+
 .main-window {
   width: 100vw;
   height: 100vh;
@@ -34,6 +44,40 @@ button {
   background: radial-gradient(circle at center, #212124, #18181a );
   color: white;
 }
+
+.main-window.light-mode {
+  background: radial-gradient(circle at center, #dfdfdf, #ffffff );
+}
+
+.main-window.light-mode .hover-btn {
+  color: black;
+}
+.main-window.light-mode .hover-btn:hover {
+  background: #9AA6B2;
+  color: white;
+}
+
+.main-window.light-mode .side-panel div,
+.main-window.light-mode .user-buttons button {
+  color: black;
+}
+
+.main-window.light-mode .active-contact h3 {
+  background: #9AA6B2;
+  color: white;
+}
+
+.main-window.light-mode .chat-history,
+.main-window.light-mode .chat-form {
+  background: #9AA6B2;
+}
+
+
+.main-window.light-mode .message-body {
+  background: white;
+  color: black;
+}
+
 
 .login-form {
   position: absolute;
@@ -72,7 +116,16 @@ button {
   transition: opacity .2s ease-in-out;
 }
 .login-form button.hide {
+  pointer-events: none;
   opacity: 0;
+}
+
+.main-window.light-mode .login-form input {
+  border-color: black;
+  color: black;
+}
+.main-window.light-mode .login-form button {
+  color: black;
 }
 
 .box {
@@ -171,8 +224,8 @@ button {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: #26292e;
   border-radius: 6px;
+  background: #272729;
 }
 
 .message-input {
@@ -196,21 +249,22 @@ button {
 .chat-form > div {
   width: 10%;
   height: 100%;
-  text-align: center;
-  align-content: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: transparent;
 }
 
 .send-btn {
-  aspect-ratio: 1 / 1;
   width: 40%;
-  border-radius: 50%;
 }
 
-.send-btn i {
-  width: 100%;
-  height: 100%;
-  align-content: center;
-  font-size: 1.5rem;
+.main-window.light-mode .send-btn {
+  color: white;
+}
+.main-window.light-mode .send-btn:hover {
+  background: white;
+  color: #9AA6B2;
 }
 
 .user-profile-page {
@@ -251,7 +305,6 @@ button {
   border: none;
   outline: none;
   border-bottom: 2px solid #3c3c3f;
-  border-radius: 12%;
   padding-bottom: 4px;
   color: white;
   font-size: 1.2rem;
@@ -281,6 +334,17 @@ button {
 }
 
 
+.user-profile-page.light-mode input,
+.user-profile-page.light-mode textarea,
+.user-profile-page.light-mode h2,
+.user-profile-page.light-mode p {
+  color: black;
+  border-color: #9AA6B2;
+}
+.user-profile-page.light-mode input:focus, .user-profile-page.light-mode textarea:focus {
+  border-color: black;
+}
+
 .user-profile-edit input, .user-profile-page textarea {
   transition: border .3s ease-in-out;;
 }
@@ -307,6 +371,7 @@ button {
   text-align: center;
 }
 
+
 .user-panel {
   position: relative;
   grid-column: 3 / 4;
@@ -325,16 +390,14 @@ button {
   align-items: center;
 }
 .login-wrapper button {
-  border-radius: 50%;
   width: 40%;
-  aspect-ratio: 1 / 1;
-  font-size: 1.2rem;
   font-weight: 600;
   user-select: none;
   z-index: 1;
 }
 
 .user-profile {
+  width: 100%;
   display: flex;
   justify-content: end;
   align-items: center;
@@ -354,16 +417,14 @@ button {
   user-select: none;
 }
 
-.logout-btn {
-  width: 20%;
-  aspect-ratio: 1 / 1;
-  border-radius: 50%;
-  align-self: end;
-  padding: 8px;
+.user-buttons {
+  width: 100%;
   display: flex;
-  justify-content: center;
+  justify-content: end;
   align-items: center;
+  gap: 10px;
 }
-.logout-btn i {
-  font-size: 1.5rem;
+
+.user-buttons button {
+  width: 20%;
 }

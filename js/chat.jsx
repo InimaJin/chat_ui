@@ -77,7 +77,7 @@ export function ChatWindow({ userData, activeContact, chat, setChat, contacts, s
                     <button type="submit" onClick={(e) => {
                         e.preventDefault();
                         handleSubmit();
-                    }} className="box send-btn hover-btn">
+                    }} className="box send-btn hover-btn round-btn">
                         <i className='bx  bx-send'></i>
                     </button>
                 </div>
