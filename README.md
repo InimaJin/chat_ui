@@ -7,4 +7,5 @@ This project features a small chat app that aims at providing decent aesthetics 
 # Installation
 
 `npm install`
+
 `npm run dev`
