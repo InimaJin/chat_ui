@@ -101,6 +101,7 @@ function MainWindow({ children, userData, setUserData, activeContact, setActiveC
                 }} handleLogout={()=>{
                     setUserData(null);
                     updateUsernameCache(null);
+                    setShowUserProfilePage(null)
                 }} toggleUserProfile={()=>{
                     setShowUserProfilePage(showUserProfilePage === null ? userData.id : null);
                 }}

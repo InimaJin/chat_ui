@@ -2,6 +2,59 @@ import { useRef, useEffect, useState } from "react";
 
 import { updateStoredChat } from "./util";
 
+
+function scrollToMessage(msg, block) {
+    msg.scrollIntoView({behavior: "instant", block: block});
+}
+
+function MessageSearch({ chat }) {
+    const [query, setQuery] = useState("");
+    const resultIdx = useRef(-1);
+
+    /* Finds the message that matches the current query and scrolls to it.
+     * Triggered by changing the query itself or by using the previous/ next buttons.
+     * prev === true => Go to prev matching message.
+     * prev === false => Go to next matching message. */
+    function getNext(query, prev) {
+        if (!query.trim()) return;
+
+        if (resultIdx.current === -1) {
+            resultIdx.current = chat.length;
+        }
+
+        const incre = prev ? -1 : 1;
+
+        for (let i=resultIdx.current + incre; i>=0 && i<chat.length; i += incre) {
+            const msg = chat[i];
+            const msgText = msg.text.toLowerCase();
+            if (msgText.includes(query.toLowerCase())) {
+                resultIdx.current = i;
+                const element = document.querySelector(`#msg-${msg.msgId}`);
+                scrollToMessage(element, "start");
+                break;
+            }
+        }
+    }
+
+    const hideButtons = query.trim().length === 0 ? "hide" : "";
+
+    return (
+        <div className="box search-menu">
+            <input value={query} placeholder="search messages..."
+                onChange={(e) => {
+                    resultIdx.current = -1;
+                    const input = e.target.value;
+                    setQuery(input);
+                    getNext(input, true);
+                }}
+            />
+            <button className={hideButtons} onClick={() => getNext(query, true)}><i className='bxr  bx-arrow-up'></i></button>
+            <button className={hideButtons} onClick={() => getNext(query, false)}><i className='bxr  bx-arrow-down'></i> </button>
+        </div>
+    );
+}
+
+
 /* A single message in the chat history between the user and a contact. Graphical representation of an individual
  * message object in the chat array. */
 function Message({ ref, userId, messageObj }) {
@@ -17,7 +70,7 @@ function Message({ ref, userId, messageObj }) {
         }
     ).format(date);
     return (
-        <div ref={ref} className={"message-wrapper " + msgType}>
+        <div id={`msg-${messageObj.msgId}`} ref={ref} className={"message-wrapper " + msgType}>
             <p className="msg-timestamp">{timestamp}</p>
             <div className="message-body">
                 {messageObj.text}
@@ -29,16 +82,13 @@ function Message({ ref, userId, messageObj }) {
 /* Window for chat history and text input. */
 export function ChatWindow({ userData, activeContact, chat, setChat, contacts, setContacts }) {
     const latestMessageRef = useRef(null);
-    function scrollToLatestMessage() {
-        latestMessageRef.current.scrollIntoView({behavior: "instant", block: "end"});
-    }
 
     const [scrollDown, setScrollDown] = useState(false)
     const chatInputRef = useRef(null);
     useEffect(() => {
         chatInputRef.current.focus();
         if (latestMessageRef.current) {
-            scrollToLatestMessage();
+            scrollToMessage(latestMessageRef.current, "end");
         }
     }, [activeContact, scrollDown]);
 
@@ -86,11 +136,12 @@ export function ChatWindow({ userData, activeContact, chat, setChat, contacts, s
 
     return (
         <>
+            <MessageSearch chat={chat} />
             <div className="chat-history box">
                 {messages}
             </div>
-            <form className="chat-form">
-                <textarea ref={chatInputRef} className="message-input box"
+            <form className="chat-form box">
+                <textarea ref={chatInputRef} className="message-input"
                     value={contactData.currentMessage}
                     onChange={(e) => onTextChange(e.target.value)}
                 />
@@ -98,7 +149,7 @@ export function ChatWindow({ userData, activeContact, chat, setChat, contacts, s
                     <button type="submit" onClick={(e) => {
                         e.preventDefault();
                         handleSubmit();
-                    }} className="box send-btn hover-btn round-btn">
+                    }} className="send-btn hover-btn round-btn">
                         <i className='bx  bx-send'></i>
                     </button>
                 </div>

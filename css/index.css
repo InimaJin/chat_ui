@@ -39,7 +39,7 @@ button {
   padding: 1vw 0;
   display: grid;
   grid-template-columns: 1fr 6fr 1fr;
-  grid-template-rows: 8fr 1fr;
+  grid-template-rows: 0.5fr 8fr 1.5fr;
   grid-gap: 4px;
   background: radial-gradient(circle at center, #212124, #18181a );
   color: white;
@@ -66,12 +66,6 @@ button {
   background: #9AA6B2;
   color: white;
 }
-
-.main-window.light-mode .chat-history,
-.main-window.light-mode .chat-form {
-  background: #9AA6B2;
-}
-
 
 .main-window.light-mode .message-body {
   background: white;
@@ -129,7 +123,12 @@ button {
 }
 
 .box {
+  background: #272729;
   border: none;
+  border-radius: 6px;
+}
+.main-window.light-mode .box {
+  background: #9AA6B2;
 }
 
 .side-panel {
@@ -139,7 +138,7 @@ button {
 
 .contacts-panel {
   grid-column: 1 / 2;
-  grid-row: 1 / 3;
+  grid-row: 1 / 4;
   border-radius: 0 6px 6px 0;
 }
 
@@ -159,28 +158,62 @@ button {
   transition: transform .1s ease-in-out;
   padding: 6px;
   border-radius: 6px;
+  background: transparent;
 }
 .contact:not(.active-contact):hover h3 {
   transform: scale(1.05);
 }
 
 .active-contact h3 {
-  background: #272729;
-}
-.active-contact h3 {
   font-weight: 600;
+  background: #272729;
 }
 
 .chat-history {
+  position: relative;
   grid-column: 2 / 3;
-  grid-row: 1 / 2;
+  grid-row: 2 / 3;
   display: flex;
   flex-flow: column;
   gap: 4px;
   padding: 16px;
   overflow-y: auto;
-  border-radius: 6px;
-  background: #272729;
+}
+
+.search-menu {
+  grid-row: 1 / 2;
+  grid-column: 2 / 3;
+  position: sticky;
+  top: 0;
+  left: 0;
+  display: flex;
+  justify-content: start;
+  align-items: stretch;
+  gap: 6px;
+}
+.search-menu input,
+.search-menu button {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: white;
+  font-size: 1rem;
+}
+
+.search-menu input {
+  flex: 9;
+  padding: 0 16px;
+}
+
+.search-menu button {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: opacity .2s ease-in-out;
+}
+.search-menu button.hide {
+  opacity: 0;
 }
 
 .message-wrapper {
@@ -218,13 +251,11 @@ button {
 }
 
 .chat-form {
-  grid-row: 2 / 3;
+  grid-row: 3 / 4;
   grid-column: 2 / 3;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-radius: 6px;
-  background: #272729;
 }
 
 .message-input {
@@ -237,6 +268,7 @@ button {
   outline: none;
   border-radius: 6px 6px 0 0;
   background: transparent;
+  border: none;
 }
 
 .chat-history, .message-input, .user-profile-page textarea {
@@ -268,7 +300,7 @@ button {
 
 .user-profile-page {
   grid-column: 2 / 3;
-  grid-row: 1 / 3;
+  grid-row: 1 / 4;
   background: transparent;
   display: flex;
   flex-flow: column;
@@ -374,7 +406,7 @@ button {
 .user-panel {
   position: relative;
   grid-column: 3 / 4;
-  grid-row: 1 / 3;
+  grid-row: 1 / 4;
   display: flex;
   flex-flow: column;
   align-items: center;
