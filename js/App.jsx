@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useRef } from "react";
 
 import { DisplayModeCtx } from "./context.jsx";
 import {
@@ -15,9 +15,44 @@ import { ChatWindow } from "./chat.jsx";
 import { UserPanel, UserProfilePage } from "./user.jsx";
 import { contactsData } from "./data.js";
 
+let propData;
+export default function App() {
+	const [userData, setUserData] = useState(loadUserData(loadCachedUsername()));
+	const [contacts, setContacts] = useState(contactsData);
+	const [activeContactId, setActiveContactId] = useState(-1);
+	const [chat, setChat] = useState(
+		userData ? loadStoredChat(userData.id, activeContactId) : []
+	);
+
+	const [displayMode, setDisplayMode] = useState(
+		userData ? userData.displayMode : "dark-mode"
+	);
+
+	propData = {
+		userData: userData,
+		setUserData: setUserData,
+		activeContact: activeContactId,
+		setActiveContact: setActiveContactId,
+		chat: chat,
+		setChat: setChat,
+		contacts: contacts,
+		setContacts: setContacts,
+	};
+
+	return (
+		<DisplayModeCtx
+			value={{
+				displayMode: displayMode,
+				setDisplayMode: setDisplayMode,
+			}}
+		>
+			<MainWindow {...propData} />
+		</DisplayModeCtx>
+	);
+}
+
 /* The primary application window. */
 function MainWindow({
-	children,
 	userData,
 	setUserData,
 	activeContact,
@@ -65,11 +100,15 @@ function MainWindow({
 		setChat(storedChat);
 	}
 
+	const contactsPanelRef = useRef(null);
+	const userPanelRef = useRef(null);
+
 	let content;
 	if (userData) {
 		content = (
 			<>
 				<ContactsPanel
+					ref={contactsPanelRef}
 					contactsList={contacts}
 					onContactSelect={(nextContactId) => {
 						if (activeContact !== nextContactId) {
@@ -102,7 +141,11 @@ function MainWindow({
 						}}
 					/>
 				) : (
-					children
+					<ChatWindow
+						{...propData}
+						contactsPanelRef={contactsPanelRef}
+						userPanelRef={userPanelRef}
+					/>
 				)}
 			</>
 		);
@@ -136,6 +179,7 @@ function MainWindow({
 			<div className={"main-window " + displayMode}>
 				{content}
 				<UserPanel
+					ref={userPanelRef}
 					userData={userData}
 					handleLogin={() => {
 						setShowLogin(!showLoginForm);
@@ -154,42 +198,5 @@ function MainWindow({
 				/>
 			</div>
 		</>
-	);
-}
-
-export default function App() {
-	const [userData, setUserData] = useState(loadUserData(loadCachedUsername()));
-	const [contacts, setContacts] = useState(contactsData);
-	const [activeContactId, setActiveContactId] = useState(-1);
-	const [chat, setChat] = useState(
-		userData ? loadStoredChat(userData.id, activeContactId) : []
-	);
-
-	const [displayMode, setDisplayMode] = useState(
-		userData ? userData.displayMode : "dark-mode"
-	);
-
-	const data = {
-		userData: userData,
-		setUserData: setUserData,
-		activeContact: activeContactId,
-		setActiveContact: setActiveContactId,
-		chat: chat,
-		setChat: setChat,
-		contacts: contacts,
-		setContacts: setContacts,
-	};
-
-	return (
-		<DisplayModeCtx
-			value={{
-				displayMode: displayMode,
-				setDisplayMode: setDisplayMode,
-			}}
-		>
-			<MainWindow {...data}>
-				<ChatWindow {...data} />
-			</MainWindow>
-		</DisplayModeCtx>
 	);
 }

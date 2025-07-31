@@ -3,6 +3,7 @@ import { DisplayModeCtx } from "./context";
 import { updateUserData } from "./util";
 
 export function UserPanel({
+	ref,
 	userData,
 	setUserData,
 	handleLogin,
@@ -56,7 +57,11 @@ export function UserPanel({
 		);
 	}
 
-	return <div className="side-panel user-panel">{content}</div>;
+	return (
+		<div ref={ref} className="side-panel user-panel">
+			{content}
+		</div>
+	);
 }
 
 export function UserProfilePage({

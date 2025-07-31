@@ -40,7 +40,7 @@ button {
 	display: grid;
 	grid-template-columns: 1fr 6fr 1fr;
 	grid-template-rows: 0.5fr 8fr 1.5fr;
-	grid-gap: 4px;
+	grid-gap: 16px;
 	background: radial-gradient(circle at center, #212124, #18181a);
 	color: white;
 }
@@ -179,7 +179,7 @@ button {
 	overflow-y: auto;
 }
 
-.search-menu {
+.top-bar {
 	grid-row: 1 / 2;
 	grid-column: 2 / 3;
 	position: sticky;
@@ -190,8 +190,8 @@ button {
 	align-items: stretch;
 	gap: 6px;
 }
-.search-menu input,
-.search-menu button {
+.top-bar input,
+.top-bar button {
 	background: transparent;
 	border: none;
 	outline: none;
@@ -199,20 +199,29 @@ button {
 	font-size: 1rem;
 }
 
-.search-menu input {
+.top-bar input {
 	flex: 9;
 	padding: 0 16px;
 }
 
-.search-menu button {
+.top-bar button {
 	flex: 1;
 	display: flex;
 	justify-content: center;
 	align-items: center;
 	transition: opacity 0.2s ease-in-out;
 }
-.search-menu button.hide {
+.top-bar button.hide {
 	opacity: 0;
+}
+
+.top-bar .mobile-btn {
+	display: none;
+}
+
+.main-window.light-mode .top-bar input,
+.main-window.light-mode .top-bar button {
+	color: black;
 }
 
 .message-wrapper {
@@ -243,7 +252,8 @@ button {
 
 .message-body {
 	background: #18181a;
-	width: 45%;
+	min-width: 45%;
+	max-width: 90%;
 	padding: 16px;
 	white-space: pre-wrap;
 	overflow-wrap: break-word;
@@ -253,13 +263,13 @@ button {
 	grid-row: 3 / 4;
 	grid-column: 2 / 3;
 	display: flex;
-	justify-content: space-between;
-	align-items: center;
+	justify-content: space-evenly;
+	align-items: stretch;
+	padding: 0 6px;
 }
 
 .message-input {
-	width: 90%;
-	height: 100%;
+	flex: 9;
 	padding: 16px;
 	resize: none;
 	color: white;
@@ -279,8 +289,7 @@ button {
 }
 
 .chat-form > div {
-	width: 10%;
-	height: 100%;
+	flex: 1;
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -288,15 +297,9 @@ button {
 }
 
 .send-btn {
-	width: 40%;
-}
-
-.main-window.light-mode .send-btn {
+	background: transparent;
+	border: none;
 	color: white;
-}
-.main-window.light-mode .send-btn:hover {
-	background: white;
-	color: #9aa6b2;
 }
 
 .user-profile-page {
@@ -460,4 +463,63 @@ button {
 
 .user-buttons button {
 	width: 20%;
+}
+
+@media screen and (max-width: 1024px) {
+	.main-window {
+		display: flex;
+		flex-flow: column;
+		align-items: stretch;
+		justify-content: space-evenly;
+		gap: 16px;
+		padding: 16px;
+	}
+
+	.top-bar {
+		flex: 0.5;
+	}
+
+	.chat-history {
+		flex: 14;
+	}
+
+	.chat-form {
+		flex: 1;
+	}
+
+	.side-panel {
+		background: #18181a;
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100vw;
+		height: 100vh;
+		padding: 16px;
+		z-index: 200;
+		transition: transform 0.15s ease-in-out;
+		border-radius: 0;
+	}
+
+	.main-window.light-mode .side-panel {
+		background: white;
+	}
+
+	.side-panel.active {
+		transform: none;
+	}
+
+	.contacts-panel {
+		transform: translateX(-100%);
+	}
+	.user-panel {
+		transform: translateX(100%);
+	}
+
+	.top-bar .mobile-btn {
+		display: initial;
+		font-size: 1.9rem;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
 }

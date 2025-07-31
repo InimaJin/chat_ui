@@ -2,11 +2,11 @@ import { useRef, useEffect, useState } from "react";
 
 import { updateStoredChat } from "./util";
 
-function scrollToMessage(msg, block) {
-	msg.scrollIntoView({ behavior: "instant", block: block });
+function scrollToMessage(msg, behavior, block) {
+	msg.scrollIntoView({ behavior: behavior, block: block });
 }
 
-function MessageSearch({ chat }) {
+function TopBar({ chat, contactsPanelRef, userPanelRef }) {
 	const [query, setQuery] = useState("");
 	const resultIdx = useRef(-1);
 
@@ -33,16 +33,26 @@ function MessageSearch({ chat }) {
 			if (msgText.includes(query.toLowerCase())) {
 				resultIdx.current = i;
 				const element = document.querySelector(`#msg-${msg.msgId}`);
-				scrollToMessage(element, "start");
+				scrollToMessage(element, "smooth", "start");
 				break;
 			}
 		}
 	}
 
-	const hideButtons = query.trim().length === 0 ? "hide" : "";
+	function showSidepanel(panelRef) {
+		panelRef.current.classList.add("active");
+	}
+
+	const hideSearchButtons = query.trim().length === 0 ? "hide" : "";
 
 	return (
-		<div className="box search-menu">
+		<div className="top-bar">
+			<button
+				className="mobile-btn"
+				onClick={() => showSidepanel(contactsPanelRef)}
+			>
+				<i className="bxr  bxs-contact-book"></i>
+			</button>
 			<input
 				value={query}
 				placeholder="search messages..."
@@ -53,11 +63,23 @@ function MessageSearch({ chat }) {
 					getNext(input, true);
 				}}
 			/>
-			<button className={hideButtons} onClick={() => getNext(query, true)}>
+			<button
+				className={hideSearchButtons}
+				onClick={() => getNext(query, true)}
+			>
 				<i className="bxr  bx-arrow-up"></i>
 			</button>
-			<button className={hideButtons} onClick={() => getNext(query, false)}>
+			<button
+				className={hideSearchButtons}
+				onClick={() => getNext(query, false)}
+			>
 				<i className="bxr  bx-arrow-down"></i>{" "}
+			</button>
+			<button
+				className="mobile-btn"
+				onClick={() => showSidepanel(userPanelRef)}
+			>
+				<i className="bxr  bxs-user"></i>
 			</button>
 		</div>
 	);
@@ -95,6 +117,8 @@ export function ChatWindow({
 	setChat,
 	contacts,
 	setContacts,
+	contactsPanelRef,
+	userPanelRef,
 }) {
 	const latestMessageRef = useRef(null);
 
@@ -103,7 +127,7 @@ export function ChatWindow({
 	useEffect(() => {
 		chatInputRef.current.focus();
 		if (latestMessageRef.current) {
-			scrollToMessage(latestMessageRef.current, "end");
+			scrollToMessage(latestMessageRef.current, "instant", "end");
 		}
 	}, [activeContact, scrollDown]);
 
@@ -157,7 +181,11 @@ export function ChatWindow({
 
 	return (
 		<>
-			<MessageSearch chat={chat} />
+			<TopBar
+				chat={chat}
+				contactsPanelRef={contactsPanelRef}
+				userPanelRef={userPanelRef}
+			/>
 			<div className="chat-history box">{messages}</div>
 			<form className="chat-form box">
 				<textarea
@@ -173,7 +201,7 @@ export function ChatWindow({
 							e.preventDefault();
 							handleSubmit();
 						}}
-						className="send-btn hover-btn round-btn"
+						className="send-btn round-btn"
 					>
 						<i className="bx  bx-send"></i>
 					</button>
