@@ -54,6 +54,7 @@ function TopBar({ chat, contactsPanelRef, userPanelRef }) {
 				<i className="bxr  bxs-contact-book"></i>
 			</button>
 			<input
+				className="msg-search-input"
 				value={query}
 				placeholder="search messages..."
 				onChange={(e) => {
@@ -64,13 +65,13 @@ function TopBar({ chat, contactsPanelRef, userPanelRef }) {
 				}}
 			/>
 			<button
-				className={hideSearchButtons}
+				className={"search-btn " + hideSearchButtons}
 				onClick={() => getNext(query, true)}
 			>
 				<i className="bxr  bx-arrow-up"></i>
 			</button>
 			<button
-				className={hideSearchButtons}
+				className={"search-btn " + hideSearchButtons}
 				onClick={() => getNext(query, false)}
 			>
 				<i className="bxr  bx-arrow-down"></i>{" "}

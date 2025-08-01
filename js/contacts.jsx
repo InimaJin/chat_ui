@@ -1,11 +1,8 @@
-function Contact({ panelRef, id, name, isActive, onSelect }) {
+function Contact({ id, name, isActive, onSelect }) {
 	const activeClass = isActive ? "active-contact" : "";
 	return (
 		<div
-			onClick={() => {
-				panelRef.current.classList.remove("active");
-				onSelect(id);
-			}}
+			onClick={()=>onSelect(id)}
 			className={`contact ${activeClass}`}
 		>
 			<h3 className={isActive ? "box" : ""}>{name}</h3>
@@ -26,7 +23,11 @@ export function ContactsPanel({
 				panelRef={ref}
 				id={c.id}
 				name={c.name}
-				onSelect={onContactSelect}
+				onSelect={(nextId) => {
+						onContactSelect(nextId);
+						ref.current.classList.remove("active");
+					}
+				}
 				isActive={c.id === activeContact}
 			/>
 		);

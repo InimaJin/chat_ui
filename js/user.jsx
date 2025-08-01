@@ -16,11 +16,15 @@ export function UserPanel({
 	if (userData) {
 		content = (
 			<>
-				<div className="user-profile">
+				<button onClick={()=>ref.current.classList.remove("active")} className="mobile-btn back-btn">
+					<i className='bxr  bx-arrow-left-stroke'></i>
+				</button>
+				<div onClick={()=>{
+					toggleUserProfile();
+					ref.current.classList.remove("active");
+				}} className="user-profile">
 					<h2>{userData.name}</h2>
-					<a onClick={toggleUserProfile}>
-						<img src={userData.profileImg} alt="Profile picture" />
-					</a>
+					<img src={userData.profileImg} alt="Profile picture" />
 				</div>
 				<div className="user-buttons">
 					<button
@@ -72,10 +76,18 @@ export function UserProfilePage({
 }) {
 	const [userInput, setUserInput] = useState(userData);
 
-	const displayMode = useContext(DisplayModeCtx).displayMode;
+	let backButton = null;
+	if (!isUser) {
+		backButton = (
+			<button onClick={()=>setShowUserProfilePage(null)} className="mobile-btn back-btn">
+				<i className='bxr  bx-arrow-left-stroke'></i>
+			</button>
+		);
+	}
 
 	return (
-		<div className={"user-profile-page " + displayMode}>
+		<div className="user-profile-page">
+			{backButton}
 			<div className="user-profile-edit">
 				<div className="profile-img-wrapper">
 					<img src={userData.profileImg} alt="profile picture" />
@@ -133,7 +145,7 @@ export function UserProfilePage({
 							Apply
 						</button>
 						<button
-							onClick={() => {
+							onClick={()=>{
 								setUserInput(userData);
 								setShowUserProfilePage(null);
 							}}
