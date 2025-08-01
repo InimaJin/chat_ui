@@ -118,43 +118,46 @@ button {
 	position: absolute;
 	top: 0;
 	left: 0;
-	width: 100%;
-	height: 100%;
+	width: 100vw;
+	height: 100vh;
 	background: transparent;
 	display: flex;
 	justify-content: center;
 	align-items: center;
 	gap: 16px;
-}
+	z-index: 201;
 
-.login-form input {
-	width: 20%;
-	font-size: 2rem;
-	background: transparent;
-	color: white;
-	text-align: center;
-	outline: none;
-	border: none;
-	border-bottom: 2px solid white;
-	padding-bottom: 6px;
-}
+	input {
+		width: 20%;
+		font-size: 2rem;
+		background: transparent;
+		color: white;
+		text-align: center;
+		outline: none;
+		border: none;
+		border-bottom: 2px solid white;
+		padding-bottom: 6px;
+	}
 
-.login-form button {
-	background: transparent;
-	border: none;
-	color: white;
-	font-size: 2rem;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	opacity: 1;
-	transition: opacity 0.2s ease-in-out;
-}
-.login-form button.hide {
-	pointer-events: none;
-	opacity: 0;
-}
 
+	button {
+		background: transparent;
+		border: none;
+		color: white;
+		font-size: 2rem;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		opacity: 1;
+		transition: opacity 0.2s ease-in-out;
+	}
+
+
+	button.hide {
+		pointer-events: none;
+		opacity: 0;
+	}
+}
 
 .box {
 	background: #272729;
@@ -494,6 +497,15 @@ button {
 		justify-content: center;
 		align-items: center;
 		color: white;
+	}
+
+	.login-form {
+		flex-flow: column;
+		gap: 4vh;
+
+		input {
+			width: 80%;
+		}
 	}
 
 	.top-bar {

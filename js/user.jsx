@@ -9,10 +9,11 @@ export function UserPanel({
 	handleLogin,
 	handleLogout,
 	toggleUserProfile,
+	showLoginForm
 }) {
 	const { displayMode, setDisplayMode } = useContext(DisplayModeCtx);
 
-	let content;
+	let content = null;
 	if (userData) {
 		content = (
 			<>
@@ -51,7 +52,7 @@ export function UserPanel({
 				</div>
 			</>
 		);
-	} else {
+	} else if (!showLoginForm) {
 		content = (
 			<div className="login-wrapper">
 				<button className="hover-btn round-btn" onClick={handleLogin}>
@@ -61,8 +62,9 @@ export function UserPanel({
 		);
 	}
 
+	const panelClass = userData ? "" : "active";
 	return (
-		<div ref={ref} className="side-panel user-panel">
+		<div ref={ref} className={"side-panel user-panel " + panelClass}>
 			{content}
 		</div>
 	);

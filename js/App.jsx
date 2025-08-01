@@ -195,6 +195,7 @@ function MainWindow({
 						);
 					}}
 					setUserData={setUserData}
+					showLoginForm={showLoginForm}
 				/>
 			</div>
 		</>
