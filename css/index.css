@@ -56,7 +56,7 @@ button {
 	background: radial-gradient(circle at center, #dfdfdf, #ffffff);
 
 	.box {
-		background: #9aa6b2;
+		background: #9FB3DF;
 	}
 
 	.hover-btn {
@@ -65,7 +65,7 @@ button {
 
 	@media (any-hover: hover) {
 		.hover-btn:hover {
-			background: #9aa6b2;
+			background: #9FB3DF;
 			color: white;
 		}
 	}
@@ -76,13 +76,17 @@ button {
 	}
 
 	.active-contact h3 {
-		background: #9aa6b2;
+		background: #9FB3DF;
 		color: white;
 	}
 
 	.message-body {
 		background: white;
 		color: black;
+	}
+
+	.highlight-msg .message-body {
+		box-shadow: 6px 6px #BDDDE4;
 	}
 
 	.top-bar .search-btn,
@@ -104,7 +108,7 @@ button {
 		h2,
 		p {
 			color: black;
-			border-color: #9aa6b2;
+			border-color: #9FB3DF;
 		}
 
 		input:focus,
@@ -289,6 +293,11 @@ button {
 	padding: 16px;
 	white-space: pre-wrap;
 	overflow-wrap: break-word;
+	transition: box-shadow .2s ease-in-out;
+}
+
+.highlight-msg .message-body {
+	box-shadow: 6px 6px white;
 }
 
 .chat-form {
@@ -477,118 +486,4 @@ button {
 	justify-content: end;
 	align-items: center;
 	gap: 10px;
-}
-
-
-@media screen and (max-width: 1024px) {
-	.main-window {
-		display: flex;
-		flex-flow: column;
-		align-items: stretch;
-		justify-content: space-evenly;
-		gap: 16px;
-		padding: 16px;
-	}
-
-	.mobile-btn {
-		display: initial;
-		font-size: 1.2rem;
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		color: white;
-	}
-
-	.login-form {
-		flex-flow: column;
-		gap: 4vh;
-
-		input {
-			width: 80%;
-		}
-	}
-
-	.top-bar {
-		flex: 0.5;
-	}
-
-	.chat-history {
-		flex: 14;
-	}
-
-	.chat-form {
-		flex: 1;
-	}
-
-	.side-panel {
-		background: #18181a;
-		position: fixed;
-		top: 0;
-		left: 0;
-		width: 100vw;
-		height: 100vh;
-		padding: 16px;
-		z-index: 200;
-		transition: transform 0.04s ease-in-out;
-		border-radius: 0;
-	}
-
-	.main-window.light-mode {
-		.side-panel {
-			background: white;
-		}
-
-		.mobile-btn {
-			color: black;
-		}
-	}
-
-	.side-panel.active {
-		transform: none;
-	}
-
-	.contacts-panel {
-		transform: translateX(-100%);
-	}
-
-	.back-btn {
-		position: absolute;
-		top: 8px;
-		left: 8px;
-		font-size: 2rem;
-	}
-
-	.user-panel {
-		transform: translateX(100%);
-	}
-
-	.user-profile {
-		gap: 32px;
-
-		img {
-			width: 15%;
-		}
-	}
-
-	.user-profile-page {
-		padding: 0 16px;
-
-		.user-profile-edit {
-			width: 100%;
-
-			display: flex;
-			flex-flow: column;
-			justify-content: space-evenly;
-			align-items: stretch;
-
-		}
-
-		textarea {
-			width: 100%;
-		}
-
-		.edit-buttons {
-			width: 100%;
-		}
-	}
 }

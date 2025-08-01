@@ -9,18 +9,29 @@ function scrollToMessage(msg, behavior, block) {
 function TopBar({ chat, contactsPanelRef, userPanelRef }) {
 	const [query, setQuery] = useState("");
 	const resultIdx = useRef(-1);
+	const prevFoundMsg = useRef(null);
+
 
 	/* Finds the message that matches the current query and scrolls to it.
 	 * Triggered by changing the query itself or by using the previous/ next buttons.
 	 * prev === true => Go to prev matching message.
 	 * prev === false => Go to next matching message. */
 	function getNext(query, prev) {
-		if (!query.trim()) return;
-
-		if (resultIdx.current === -1) {
-			resultIdx.current = chat.length;
+		function setHighlight(msgElement, highlight) {
+			if (highlight) {
+				msgElement.classList.add("highlight-msg");
+			} else {
+				msgElement.classList.remove("highlight-msg");
+			}
 		}
 
+		if (!query.trim()) {
+			if (prevFoundMsg.current) {
+				setHighlight(prevFoundMsg.current, false);
+			}
+			return;
+		}
+		
 		const incre = prev ? -1 : 1;
 
 		for (
@@ -33,6 +44,11 @@ function TopBar({ chat, contactsPanelRef, userPanelRef }) {
 			if (msgText.includes(query.toLowerCase())) {
 				resultIdx.current = i;
 				const element = document.querySelector(`#msg-${msg.msgId}`);
+				setHighlight(element, true);
+				if (prevFoundMsg.current && prevFoundMsg.current !== element) {
+					setHighlight(prevFoundMsg.current, false);
+				}
+				prevFoundMsg.current = element;
 				scrollToMessage(element, "smooth", "start");
 				break;
 			}
@@ -58,7 +74,7 @@ function TopBar({ chat, contactsPanelRef, userPanelRef }) {
 				value={query}
 				placeholder="search messages..."
 				onChange={(e) => {
-					resultIdx.current = -1;
+					resultIdx.current = chat.length;
 					const input = e.target.value;
 					setQuery(input);
 					getNext(input, true);
