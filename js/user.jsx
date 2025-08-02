@@ -9,7 +9,7 @@ export function UserPanel({
 	handleLogin,
 	handleLogout,
 	toggleUserProfile,
-	showLoginForm
+	showLoginForm,
 }) {
 	const { displayMode, setDisplayMode } = useContext(DisplayModeCtx);
 
@@ -17,13 +17,19 @@ export function UserPanel({
 	if (userData) {
 		content = (
 			<>
-				<button onClick={()=>ref.current.classList.remove("active")} className="mobile-btn back-btn">
-					<i className='bxr  bx-arrow-left-stroke'></i>
+				<button
+					onClick={() => ref.current.classList.remove("active")}
+					className="mobile-btn back-btn"
+				>
+					<i className="bxr  bx-arrow-left-stroke"></i>
 				</button>
-				<div onClick={()=>{
-					toggleUserProfile();
-					ref.current.classList.remove("active");
-				}} className="user-profile">
+				<div
+					onClick={() => {
+						toggleUserProfile();
+						ref.current.classList.remove("active");
+					}}
+					className="user-profile"
+				>
 					<h2>{userData.name}</h2>
 					<img src={userData.profileImg} alt="Profile picture" />
 				</div>
@@ -81,8 +87,11 @@ export function UserProfilePage({
 	let backButton = null;
 	if (!isUser) {
 		backButton = (
-			<button onClick={()=>setShowUserProfilePage(null)} className="mobile-btn back-btn">
-				<i className='bxr  bx-arrow-left-stroke'></i>
+			<button
+				onClick={() => setShowUserProfilePage(null)}
+				className="mobile-btn back-btn"
+			>
+				<i className="bxr  bx-arrow-left-stroke"></i>
 			</button>
 		);
 	}
@@ -147,7 +156,7 @@ export function UserProfilePage({
 							Apply
 						</button>
 						<button
-							onClick={()=>{
+							onClick={() => {
 								setUserInput(userData);
 								setShowUserProfilePage(null);
 							}}

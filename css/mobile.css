@@ -73,7 +73,7 @@
 
 		.mobile-btn,
 		.user-buttons button {
-			color: #9FB3DF;
+			color: #9fb3df;
 		}
 	}
 
@@ -114,7 +114,6 @@
 			flex-flow: column;
 			justify-content: space-evenly;
 			align-items: stretch;
-
 		}
 
 		textarea {

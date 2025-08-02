@@ -11,7 +11,6 @@ function TopBar({ chat, contactsPanelRef, userPanelRef }) {
 	const resultIdx = useRef(-1);
 	const prevFoundMsg = useRef(null);
 
-
 	/* Finds the message that matches the current query and scrolls to it.
 	 * Triggered by changing the query itself or by using the previous/ next buttons.
 	 * prev === true => Go to prev matching message.
@@ -31,7 +30,7 @@ function TopBar({ chat, contactsPanelRef, userPanelRef }) {
 			}
 			return;
 		}
-		
+
 		const incre = prev ? -1 : 1;
 
 		for (
