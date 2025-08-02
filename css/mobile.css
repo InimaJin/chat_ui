@@ -54,7 +54,7 @@
 	}
 
 	.side-panel {
-		background: #18181a;
+		background: radial-gradient(circle at center, #212124, #18181a);
 		position: fixed;
 		top: 0;
 		left: 0;
