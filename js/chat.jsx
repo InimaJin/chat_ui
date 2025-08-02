@@ -142,7 +142,10 @@ export function ChatWindow({
 	const [scrollDown, setScrollDown] = useState(false);
 	const chatInputRef = useRef(null);
 	useEffect(() => {
-		chatInputRef.current.focus();
+		//Touch devices should not focus automatically
+		if (navigator.maxTouchPoints === 0) {
+			chatInputRef.current.focus();
+		}
 		if (latestMessageRef.current) {
 			scrollToMessage(latestMessageRef.current, "instant", "end");
 		}

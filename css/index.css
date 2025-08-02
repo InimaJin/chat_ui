@@ -19,7 +19,7 @@ button {
 	transition: 0.3s ease-in-out;
 }
 
-@media (pointer: fine) and (hover: hover) {
+@media screen and (pointer: fine) and (hover: hover) {
 	.hover-btn:hover {
 		background: white;
 		color: black;
@@ -80,12 +80,22 @@ button {
 		color: white;
 	}
 
+	.message-wrapper.msg-recv .message-body {
+		background: #7887a8;
+		color: white;
+	}
+
 	.message-body {
 		background: white;
 		color: black;
 	}
 
-	.highlight-msg .message-body {
+
+	.highlight-msg.msg-sent .message-body {
+		box-shadow: 6px 6px #7887a8;
+	}
+
+	.highlight-msg.msg-recv .message-body {
 		box-shadow: 6px 6px #BDDDE4;
 	}
 
@@ -206,17 +216,6 @@ button {
 	background: #272729;
 }
 
-.chat-history {
-	position: relative;
-	grid-column: 2 / 3;
-	grid-row: 2 / 3;
-	display: flex;
-	flex-flow: column;
-	gap: 4px;
-	padding: 16px;
-	overflow-y: auto;
-}
-
 .top-bar {
 	grid-row: 1 / 2;
 	grid-column: 2 / 3;
@@ -224,7 +223,7 @@ button {
 	top: 0;
 	left: 0;
 	display: flex;
-	justify-content: start;
+	justify-content: center;
 	align-items: stretch;
 	gap: 6px;
 }
@@ -254,18 +253,27 @@ button {
 	outline: none;
 	color: white;
 }
-.top-bar button.hide {
+.search-btn.hide {
 	opacity: 0;
-	display: none;
 }
 
 .mobile-btn {
 	display: none;
 }
 
+.chat-history {
+	position: relative;
+	grid-column: 2 / 3;
+	grid-row: 2 / 3;
+	display: flex;
+	flex-flow: column;
+	gap: 4px;
+	padding: 16px;
+	overflow-y: auto;
+}
+
 .message-wrapper {
 	width: 100%;
-	color: white;
 	display: flex;
 	flex-flow: column;
 	gap: 4px;
@@ -281,25 +289,32 @@ button {
 }
 .msg-sent .message-body {
 	border-radius: 10px 0 10px 10px;
+	background: white;
+	color: black;
 }
 .msg-recv {
 	align-items: start;
 }
 .msg-recv .message-body {
 	border-radius: 0 10px 10px 10px;
+	background: #18181a;
+	color: white;
 }
 
 .message-body {
-	background: #18181a;
 	min-width: 45%;
 	max-width: 90%;
 	padding: 16px;
 	white-space: pre-wrap;
 	overflow-wrap: break-word;
-	transition: box-shadow .2s ease-in-out;
+	transition: box-shadow .12s ease-in-out;
 }
 
-.highlight-msg .message-body {
+.highlight-msg.msg-sent .message-body {
+	box-shadow: 6px 6px rgb(99, 99, 99);
+}
+
+.highlight-msg.msg-recv .message-body {
 	box-shadow: 6px 6px white;
 }
 
