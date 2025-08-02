@@ -2,6 +2,10 @@
 
 @media screen and (max-width: 1024px) {
 	.main-window {
+		overflow-x: hidden;
+		position: absolute;
+		top: 0;
+		left: 0;
 		display: flex;
 		flex-flow: column;
 		align-items: stretch;
@@ -30,6 +34,15 @@
 
 	.top-bar {
 		flex: 0.5;
+		gap: 0;
+
+		.search-btn {
+			font-size: 1rem;
+		}
+
+		.msg-search-input {
+			padding: 0 6px;
+		}
 	}
 
 	.chat-history {
@@ -45,8 +58,8 @@
 		position: fixed;
 		top: 0;
 		left: 0;
-		width: 100vw;
-		height: 100vh;
+		width: 100dvw;
+		height: 100dvh;
 		padding: 16px;
 		z-index: 200;
 		transition: transform 0.04s ease-in-out;
@@ -58,8 +71,9 @@
 			background: white;
 		}
 
-		.mobile-btn {
-			color: black;
+		.mobile-btn,
+		.user-buttons button {
+			color: #9FB3DF;
 		}
 	}
 

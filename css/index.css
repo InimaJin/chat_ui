@@ -19,10 +19,17 @@ button {
 	transition: 0.3s ease-in-out;
 }
 
-@media (any-hover: hover) {
+@media (pointer: fine) and (hover: hover) {
 	.hover-btn:hover {
 		background: white;
 		color: black;
+	}
+
+	.main-window.light-mode {
+		.hover-btn:hover {
+			background: #9FB3DF;
+			color: white;
+		}
 	}
 
 	.contact:not(.active-contact):hover h3 {
@@ -41,8 +48,8 @@ button {
 }
 
 .main-window {
-	width: 100vw;
-	height: 100vh;
+	width: 100dvw;
+	height: 100dvh;
 	padding: 1vw 0;
 	display: grid;
 	grid-template-columns: 1fr 6fr 1fr;
@@ -61,13 +68,6 @@ button {
 
 	.hover-btn {
 		color: black;
-	}
-
-	@media (any-hover: hover) {
-		.hover-btn:hover {
-			background: #9FB3DF;
-			color: white;
-		}
 	}
 
 	.side-panel div,
@@ -89,7 +89,9 @@ button {
 		box-shadow: 6px 6px #BDDDE4;
 	}
 
-	.top-bar .search-btn,
+	.top-bar .search-btn {
+		color: #9FB3DF;
+	}
 	.msg-search-input {
 		color: black;
 	}
@@ -122,8 +124,8 @@ button {
 	position: absolute;
 	top: 0;
 	left: 0;
-	width: 100vw;
-	height: 100vh;
+	width: 100%;
+	height: 100%;
 	background: transparent;
 	display: flex;
 	justify-content: center;
@@ -254,6 +256,7 @@ button {
 }
 .top-bar button.hide {
 	opacity: 0;
+	display: none;
 }
 
 .mobile-btn {
