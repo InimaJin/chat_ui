@@ -1,4 +1,5 @@
-import { useState, useContext, useRef } from "react";
+import { useState, useRef } from "react";
+import { Outlet } from "react-router-dom";
 
 import { DisplayModeCtx } from "./context.jsx";
 import {
@@ -15,7 +16,7 @@ import { ChatWindow } from "./chat.jsx";
 import { UserPanel, UserProfilePage } from "./user.jsx";
 import { contactsData } from "./data.js";
 
-let propData;
+
 export default function App() {
 	const [userData, setUserData] = useState(loadUserData(loadCachedUsername()));
 	const [contacts, setContacts] = useState(contactsData);
@@ -27,40 +28,6 @@ export default function App() {
 	const [displayMode, setDisplayMode] = useState(
 		userData ? userData.displayMode : "dark-mode"
 	);
-
-	propData = {
-		userData: userData,
-		setUserData: setUserData,
-		activeContact: activeContactId,
-		setActiveContact: setActiveContactId,
-		chat: chat,
-		setChat: setChat,
-		contacts: contacts,
-		setContacts: setContacts,
-	};
-
-	return (
-		<DisplayModeCtx
-			value={{
-				displayMode: displayMode,
-				setDisplayMode: setDisplayMode,
-			}}
-		>
-			<MainWindow {...propData} />
-		</DisplayModeCtx>
-	);
-}
-
-/* The primary application window. */
-function MainWindow({
-	userData,
-	setUserData,
-	activeContact,
-	setActiveContact,
-	setChat,
-	contacts,
-}) {
-	const { displayMode, setDisplayMode } = useContext(DisplayModeCtx);
 
 	const [showLoginForm, setShowLogin] = useState(false);
 	const [usernameInput, setUsernameInput] = useState("");
@@ -96,7 +63,7 @@ function MainWindow({
 		updateUsernameCache(usernameInput);
 		setUserData(loginUser);
 
-		const storedChat = loadStoredChat(loginUser.id, activeContact);
+		const storedChat = loadStoredChat(loginUser.id, activeContactId);
 		setChat(storedChat);
 	}
 
@@ -111,9 +78,9 @@ function MainWindow({
 					ref={contactsPanelRef}
 					contactsList={contacts}
 					onContactSelect={(nextContactId) => {
-						if (activeContact !== nextContactId) {
+						if (activeContactId !== nextContactId) {
 							fetchChat(nextContactId);
-							setActiveContact(nextContactId);
+							setActiveContactId(nextContactId);
 							setShowUserProfilePage(null);
 						} else {
 							setShowUserProfilePage(
@@ -121,7 +88,7 @@ function MainWindow({
 							);
 						}
 					}}
-					activeContact={activeContact}
+					activeContact={activeContactId}
 				/>
 				{showUserProfilePage !== null ? (
 					<UserProfilePage
@@ -142,7 +109,12 @@ function MainWindow({
 					/>
 				) : (
 					<ChatWindow
-						{...propData}
+						userData={userData}
+						activeContact={activeContactId}
+						chat={chat}
+						setChat={setChat}
+						contacts={contacts}
+						setContacts={setContacts}
 						contactsPanelRef={contactsPanelRef}
 						userPanelRef={userPanelRef}
 					/>
@@ -175,7 +147,11 @@ function MainWindow({
 	}
 
 	return (
-		<>
+		<DisplayModeCtx
+		value={{
+			displayMode: displayMode,
+			setDisplayMode: setDisplayMode
+		}}>
 			<div className={"main-window " + displayMode}>
 				{content}
 				<UserPanel
@@ -198,6 +174,6 @@ function MainWindow({
 					showLoginForm={showLoginForm}
 				/>
 			</div>
-		</>
+		</DisplayModeCtx>
 	);
 }
