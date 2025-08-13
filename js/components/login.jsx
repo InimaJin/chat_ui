@@ -1,11 +1,17 @@
 import { useState } from "react";
 import { Form, redirect } from "react-router-dom";
-import { loadUserData, totalUsersCount, updateUserData, incrementUsersCount, updateUsernameCache } from "../util";
+import {
+	loadUserData,
+	totalUsersCount,
+	updateUserData,
+	incrementUsersCount,
+	updateUsernameCache,
+} from "../util";
 
 export async function loginAction({ request }) {
 	const formData = await request.formData();
 	const username = formData.get("username");
-	
+
 	if (username.trim().length === 0) return;
 
 	let loginUser;
@@ -42,12 +48,9 @@ export function Login() {
 					setUsernameInput(e.target.value);
 				}}
 			/>
-			<button
-				className={usernameInput.trim() ? "" : "hide"}
-				type="submit"
-			>
+			<button className={usernameInput.trim() ? "" : "hide"} type="submit">
 				<i className="bxr  bx-rocket"></i>
 			</button>
 		</Form>
-	);	
+	);
 }

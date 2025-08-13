@@ -12,7 +12,6 @@ import { ContactsPanel } from "./components/contacts.jsx";
 import { UserPanel } from "./components/user.jsx";
 import { contactsData } from "./data.js";
 
-
 export default function App() {
 	const navigate = useNavigate();
 	const params = useParams();
@@ -29,9 +28,7 @@ export default function App() {
 	const loadedData = loadUserData(loadCachedUsername());
 	if (!userData && loadedData) {
 		setUserData(loadedData);
-		setChat(
-			loadStoredChat(loadedData.id, activeContactId)
-		);
+		setChat(loadStoredChat(loadedData.id, activeContactId));
 		setDisplayMode(loadedData.displayMode);
 	}
 
@@ -46,7 +43,18 @@ export default function App() {
 	const showLoginForm = location.pathname === "/login";
 	let content;
 	if (userData) {
-		const outletCtx = params.userId ? userData.id : [userData, activeContactId, chat, setChat, contacts, setContacts, contactsPanelRef, userPanelRef];
+		const outletCtx = params.userId
+			? userData.id
+			: [
+					userData,
+					activeContactId,
+					chat,
+					setChat,
+					contacts,
+					setContacts,
+					contactsPanelRef,
+					userPanelRef,
+				];
 
 		content = (
 			<>
@@ -59,7 +67,7 @@ export default function App() {
 							setActiveContactId(nextContactId);
 							navigate("/");
 						} else {
-							const contact = contacts.find(c => c.id === activeContactId);
+							const contact = contacts.find((c) => c.id === activeContactId);
 							navigate(`user/${contact.name}/${activeContactId}`);
 						}
 					}}
@@ -69,17 +77,16 @@ export default function App() {
 			</>
 		);
 	} else if (showLoginForm) {
-		content = <Outlet context={{setUserData: setUserData}}/>
+		content = <Outlet context={{ setUserData: setUserData }} />;
 	}
-
-
 
 	return (
 		<DisplayModeCtx
-		value={{
-			displayMode: displayMode,
-			setDisplayMode: setDisplayMode
-		}}>
+			value={{
+				displayMode: displayMode,
+				setDisplayMode: setDisplayMode,
+			}}
+		>
 			<div className={"main-window " + displayMode}>
 				{content}
 				<UserPanel

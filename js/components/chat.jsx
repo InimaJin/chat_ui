@@ -128,7 +128,16 @@ function Message({ ref, userId, messageObj }) {
 
 /* Window for chat history and text input. */
 export function ChatWindow() {
-	const [userData, activeContactId, chat, setChat, contacts, setContacts, contactsPanelRef, userPanelRef] = useOutletContext();
+	const [
+		userData,
+		activeContactId,
+		chat,
+		setChat,
+		contacts,
+		setContacts,
+		contactsPanelRef,
+		userPanelRef,
+	] = useOutletContext();
 	const latestMessageRef = useRef(null);
 
 	const [scrollDown, setScrollDown] = useState(false);

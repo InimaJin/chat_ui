@@ -1,15 +1,16 @@
 import { useState, useContext } from "react";
-import { Form, Link, redirect, useLoaderData, useOutletContext } from "react-router-dom";
+import {
+	Form,
+	Link,
+	redirect,
+	useLoaderData,
+	useOutletContext,
+} from "react-router-dom";
 import { DisplayModeCtx } from "../context";
 import { loadUserData, updateUserData } from "../util";
 import { contactsData } from "../data";
 
-export function UserPanel({
-	ref,
-	userData,
-	setUserData,
-	handleLogout,
-}) {
+export function UserPanel({ ref, userData, setUserData, handleLogout }) {
 	const { displayMode, setDisplayMode } = useContext(DisplayModeCtx);
 
 	let content = null;
@@ -53,7 +54,7 @@ export function UserPanel({
 					</button>
 					<Link to={"/"}>
 						<button onClick={handleLogout} className="hover-btn round-btn">
-								<i className="bxr bx-door"></i>
+							<i className="bxr bx-door"></i>
 						</button>
 					</Link>
 				</div>
@@ -63,9 +64,7 @@ export function UserPanel({
 		content = (
 			<div className="login-wrapper">
 				<button className="hover-btn round-btn">
-					<Link to={"/login"}>
-						Login
-					</Link>
+					<Link to={"/login"}>Login</Link>
 				</button>
 			</div>
 		);
@@ -81,7 +80,10 @@ export function UserPanel({
 
 export function profilePageLoader({ params }) {
 	const id = parseInt(params.userId);
-	const profileData = id >= 0 ? loadUserData(params.username) : contactsData.find(c => c.id === id);
+	const profileData =
+		id >= 0
+			? loadUserData(params.username)
+			: contactsData.find((c) => c.id === id);
 	return profileData;
 }
 
@@ -92,7 +94,7 @@ export async function profilePageAction({ params, request }) {
 		name: formData.get("username"),
 		profileImg: formData.get("profile-img"),
 		about: formData.get("about"),
-		displayMode: loadUserData(params.username).displayMode
+		displayMode: loadUserData(params.username).displayMode,
 	};
 
 	updateUserData(params.username, null);
@@ -111,10 +113,7 @@ export function UserProfilePage() {
 	let backButton = null;
 	if (!isUser) {
 		backButton = (
-			<Link
-			 	to={"/"}
-				className="mobile-btn back-btn"
-			>
+			<Link to={"/"} className="mobile-btn back-btn">
 				<i className="bxr  bx-arrow-left-stroke"></i>
 			</Link>
 		);
@@ -174,18 +173,11 @@ export function UserProfilePage() {
 						}
 					/>
 					<div className="edit-buttons">
-						<button
-						 	type="submit"
-							className="hover-btn"
-						>
+						<button type="submit" className="hover-btn">
 							Apply
 						</button>
-						<button
-							className="hover-btn"
-						>
-							<Link to={"/"}>
-								Cancel
-							</Link>
+						<button className="hover-btn">
+							<Link to={"/"}>Cancel</Link>
 						</button>
 					</div>
 				</>

@@ -1,12 +1,13 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import { 
-	createBrowserRouter,
-	RouterProvider
-} from "react-router-dom"
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import App from "./App.jsx";
 import { ChatWindow } from "./components/chat.jsx";
-import { UserProfilePage, profilePageAction, profilePageLoader } from "./components/user.jsx";
+import {
+	UserProfilePage,
+	profilePageAction,
+	profilePageLoader,
+} from "./components/user.jsx";
 import { Login, loginAction } from "./components/login.jsx";
 
 const router = createBrowserRouter([
@@ -16,20 +17,20 @@ const router = createBrowserRouter([
 		children: [
 			{
 				index: true,
-				element: <ChatWindow />
+				element: <ChatWindow />,
 			},
 			{
 				path: "user/:username/:userId",
 				loader: profilePageLoader,
 				action: profilePageAction,
-				element: <UserProfilePage /> 
+				element: <UserProfilePage />,
 			},
 			{
 				path: "login",
 				action: loginAction,
-				element: <Login />
-			}
-		]
+				element: <Login />,
+			},
+		],
 	},
 ]);
 
