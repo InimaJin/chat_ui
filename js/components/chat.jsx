@@ -1,6 +1,7 @@
 import { useRef, useEffect, useState } from "react";
+import { useOutletContext } from "react-router-dom";
 
-import { updateStoredChat } from "./util";
+import { updateStoredChat } from "../util";
 
 function scrollToMessage(msg, behavior, block) {
 	msg.scrollIntoView({ behavior: behavior, block: block });
@@ -126,16 +127,8 @@ function Message({ ref, userId, messageObj }) {
 }
 
 /* Window for chat history and text input. */
-export function ChatWindow({
-	userData,
-	activeContact,
-	chat,
-	setChat,
-	contacts,
-	setContacts,
-	contactsPanelRef,
-	userPanelRef,
-}) {
+export function ChatWindow() {
+	const [userData, activeContactId, chat, setChat, contacts, setContacts, contactsPanelRef, userPanelRef] = useOutletContext();
 	const latestMessageRef = useRef(null);
 
 	const [scrollDown, setScrollDown] = useState(false);
@@ -148,13 +141,13 @@ export function ChatWindow({
 		if (latestMessageRef.current) {
 			scrollToMessage(latestMessageRef.current, "instant", "end");
 		}
-	}, [activeContact, scrollDown]);
+	});
 
-	const contactData = contacts.find((c) => c.id === activeContact);
+	const contactData = contacts.find((c) => c.id === activeContactId);
 
 	function onTextChange(newText) {
 		const nextContacts = contacts.map((c) => {
-			return c.id === activeContact
+			return c.id === activeContactId
 				? {
 						...c,
 						currentMessage: newText,
@@ -171,13 +164,13 @@ export function ChatWindow({
 			const sentMessage = {
 				msgId: chat.length,
 				sender: userData.id,
-				receiver: activeContact,
+				receiver: activeContactId,
 				timestamp: timestamp,
 				text: message,
 			};
 			const reply = {
 				msgId: chat.length + 1,
-				sender: activeContact,
+				sender: activeContactId,
 				receiver: userData.id,
 				timestamp: timestamp,
 				text: contactData.replyFn(message),
@@ -186,7 +179,7 @@ export function ChatWindow({
 
 			setScrollDown(!scrollDown);
 			setChat(nextChat);
-			updateStoredChat(userData.id, activeContact, sentMessage, reply);
+			updateStoredChat(userData.id, activeContactId, sentMessage, reply);
 			onTextChange("");
 		}
 	}

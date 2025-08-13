@@ -1,150 +1,78 @@
 import { useState, useRef } from "react";
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation, useNavigate, useParams } from "react-router-dom";
 
 import { DisplayModeCtx } from "./context.jsx";
 import {
 	loadUserData,
-	updateUserData,
 	loadStoredChat,
-	totalUsersCount,
-	incrementUsersCount,
 	loadCachedUsername,
 	updateUsernameCache,
 } from "./util.js";
-import { ContactsPanel } from "./contacts.jsx";
-import { ChatWindow } from "./chat.jsx";
-import { UserPanel, UserProfilePage } from "./user.jsx";
+import { ContactsPanel } from "./components/contacts.jsx";
+import { UserPanel } from "./components/user.jsx";
 import { contactsData } from "./data.js";
 
 
 export default function App() {
-	const [userData, setUserData] = useState(loadUserData(loadCachedUsername()));
+	const navigate = useNavigate();
+	const params = useParams();
+	const location = useLocation();
+
+	const [userData, setUserData] = useState(null);
+
 	const [contacts, setContacts] = useState(contactsData);
 	const [activeContactId, setActiveContactId] = useState(-1);
-	const [chat, setChat] = useState(
-		userData ? loadStoredChat(userData.id, activeContactId) : []
-	);
+	const [chat, setChat] = useState([]);
 
-	const [displayMode, setDisplayMode] = useState(
-		userData ? userData.displayMode : "dark-mode"
-	);
+	const [displayMode, setDisplayMode] = useState("dark-mode");
 
-	const [showLoginForm, setShowLogin] = useState(false);
-	const [usernameInput, setUsernameInput] = useState("");
-	const [showUserProfilePage, setShowUserProfilePage] = useState(null);
+	const loadedData = loadUserData(loadCachedUsername());
+	if (!userData && loadedData) {
+		setUserData(loadedData);
+		setChat(
+			loadStoredChat(loadedData.id, activeContactId)
+		);
+		setDisplayMode(loadedData.displayMode);
+	}
 
 	function fetchChat(nextContactId) {
 		const storedChat = loadStoredChat(userData.id, nextContactId);
 		setChat(storedChat);
 	}
 
-	function handleLogin() {
-		if (usernameInput.length === 0) return;
-		setUsernameInput("");
-		setShowLogin(!showLoginForm);
-
-		let loginUser = {
-			id: totalUsersCount(),
-			name: usernameInput,
-			profileImg: "/img/default_profile_pic.png",
-			about: "",
-			displayMode: "dark-mode",
-		};
-
-		const loadedUser = loadUserData(usernameInput);
-		if (loadedUser) {
-			setDisplayMode(loadedUser.displayMode);
-			loginUser = loadedUser;
-		} else {
-			updateUserData(usernameInput, loginUser);
-			incrementUsersCount(1);
-		}
-
-		updateUsernameCache(usernameInput);
-		setUserData(loginUser);
-
-		const storedChat = loadStoredChat(loginUser.id, activeContactId);
-		setChat(storedChat);
-	}
-
 	const contactsPanelRef = useRef(null);
 	const userPanelRef = useRef(null);
 
+	const showLoginForm = location.pathname === "/login";
 	let content;
 	if (userData) {
+		const outletCtx = params.userId ? userData.id : [userData, activeContactId, chat, setChat, contacts, setContacts, contactsPanelRef, userPanelRef];
+
 		content = (
 			<>
 				<ContactsPanel
 					ref={contactsPanelRef}
 					contactsList={contacts}
 					onContactSelect={(nextContactId) => {
-						if (activeContactId !== nextContactId) {
+						if (activeContactId !== nextContactId || params.userId) {
 							fetchChat(nextContactId);
 							setActiveContactId(nextContactId);
-							setShowUserProfilePage(null);
+							navigate("/");
 						} else {
-							setShowUserProfilePage(
-								showUserProfilePage === null ? nextContactId : null
-							);
+							const contact = contacts.find(c => c.id === activeContactId);
+							navigate(`user/${contact.name}/${activeContactId}`);
 						}
 					}}
 					activeContact={activeContactId}
 				/>
-				{showUserProfilePage !== null ? (
-					<UserProfilePage
-						isUser={showUserProfilePage === userData.id}
-						userData={
-							showUserProfilePage === userData.id
-								? userData
-								: contacts.find((c) => c.id === showUserProfilePage)
-						}
-						setShowUserProfilePage={setShowUserProfilePage}
-						onSave={(newData) => {
-							setUserData(newData);
-							updateUserData(userData.name, null);
-							updateUserData(newData.name, newData);
-							updateUsernameCache(newData.name);
-							setShowUserProfilePage(null);
-						}}
-					/>
-				) : (
-					<ChatWindow
-						userData={userData}
-						activeContact={activeContactId}
-						chat={chat}
-						setChat={setChat}
-						contacts={contacts}
-						setContacts={setContacts}
-						contactsPanelRef={contactsPanelRef}
-						userPanelRef={userPanelRef}
-					/>
-				)}
+				<Outlet context={outletCtx} />
 			</>
 		);
 	} else if (showLoginForm) {
-		content = (
-			<form className="login-form">
-				<input
-					placeholder="username..."
-					autoFocus
-					value={usernameInput}
-					onChange={(e) => {
-						setUsernameInput(e.target.value);
-					}}
-				/>
-				<button
-					className={usernameInput.trim() ? "" : "hide"}
-					type="submit"
-					onClick={(e) => {
-						e.preventDefault();
-						handleLogin();
-					}}
-				>
-					<i className="bxr  bx-rocket"></i>
-				</button>
-			</form>
-		);
+		content = <Outlet context={{setUserData: setUserData}}/>
 	}
+
+
 
 	return (
 		<DisplayModeCtx
@@ -157,21 +85,12 @@ export default function App() {
 				<UserPanel
 					ref={userPanelRef}
 					userData={userData}
-					handleLogin={() => {
-						setShowLogin(!showLoginForm);
-					}}
 					handleLogout={() => {
 						setUserData(null);
 						updateUsernameCache(null);
-						setShowUserProfilePage(null);
-					}}
-					toggleUserProfile={() => {
-						setShowUserProfilePage(
-							showUserProfilePage === null ? userData.id : null
-						);
+						setChat(null);
 					}}
 					setUserData={setUserData}
-					showLoginForm={showLoginForm}
 				/>
 			</div>
 		</DisplayModeCtx>

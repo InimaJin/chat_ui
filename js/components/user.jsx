@@ -1,15 +1,14 @@
 import { useState, useContext } from "react";
-import { DisplayModeCtx } from "./context";
-import { updateUserData } from "./util";
+import { Form, Link, redirect, useLoaderData, useOutletContext } from "react-router-dom";
+import { DisplayModeCtx } from "../context";
+import { loadUserData, updateUserData } from "../util";
+import { contactsData } from "../data";
 
 export function UserPanel({
 	ref,
 	userData,
 	setUserData,
-	handleLogin,
 	handleLogout,
-	toggleUserProfile,
-	showLoginForm,
 }) {
 	const { displayMode, setDisplayMode } = useContext(DisplayModeCtx);
 
@@ -23,16 +22,16 @@ export function UserPanel({
 				>
 					<i className="bxr  bx-arrow-left-stroke"></i>
 				</button>
-				<div
+				<Link
+					to={`/user/${userData.name}/${userData.id}`}
 					onClick={() => {
-						toggleUserProfile();
 						ref.current.classList.remove("active");
 					}}
 					className="user-profile"
 				>
 					<h2>{userData.name}</h2>
 					<img src={userData.profileImg} alt="Profile picture" />
-				</div>
+				</Link>
 				<div className="user-buttons">
 					<button
 						className="hover-btn round-btn"
@@ -52,17 +51,21 @@ export function UserPanel({
 							className={`bxr  bx-${displayMode === "dark-mode" ? "sun" : "moon-star"}`}
 						></i>
 					</button>
-					<button onClick={handleLogout} className="hover-btn round-btn">
-						<i className="bxr bx-door"></i>
-					</button>
+					<Link to={"/"}>
+						<button onClick={handleLogout} className="hover-btn round-btn">
+								<i className="bxr bx-door"></i>
+						</button>
+					</Link>
 				</div>
 			</>
 		);
-	} else if (!showLoginForm) {
+	} else {
 		content = (
 			<div className="login-wrapper">
-				<button className="hover-btn round-btn" onClick={handleLogin}>
-					Login
+				<button className="hover-btn round-btn">
+					<Link to={"/login"}>
+						Login
+					</Link>
 				</button>
 			</div>
 		);
@@ -76,36 +79,58 @@ export function UserPanel({
 	);
 }
 
-export function UserProfilePage({
-	isUser,
-	userData,
-	setShowUserProfilePage,
-	onSave,
-}) {
-	const [userInput, setUserInput] = useState(userData);
+export function profilePageLoader({ params }) {
+	const id = parseInt(params.userId);
+	const profileData = id >= 0 ? loadUserData(params.username) : contactsData.find(c => c.id === id);
+	return profileData;
+}
+
+export async function profilePageAction({ params, request }) {
+	const formData = await request.formData();
+	const updateUser = {
+		id: parseInt(params.userId),
+		name: formData.get("username"),
+		profileImg: formData.get("profile-img"),
+		about: formData.get("about"),
+		displayMode: loadUserData(params.username).displayMode
+	};
+
+	updateUserData(params.username, null);
+	updateUserData(updateUser.name, updateUser);
+
+	return redirect("/");
+}
+
+export function UserProfilePage() {
+	const userId = useOutletContext();
+	const profileData = useLoaderData();
+	const isUser = userId === profileData.id;
+
+	const [userInput, setUserInput] = useState(profileData);
 
 	let backButton = null;
 	if (!isUser) {
 		backButton = (
-			<button
-				onClick={() => setShowUserProfilePage(null)}
+			<Link
+			 	to={"/"}
 				className="mobile-btn back-btn"
 			>
 				<i className="bxr  bx-arrow-left-stroke"></i>
-			</button>
+			</Link>
 		);
 	}
 
 	return (
-		<div className="user-profile-page">
+		<Form method="post" className="user-profile-page">
 			{backButton}
 			<div className="user-profile-edit">
 				<div className="profile-img-wrapper">
-					<img src={userData.profileImg} alt="profile picture" />
+					<img src={profileData.profileImg} alt="profile picture" />
 				</div>
 				{isUser ? (
 					<>
 						<input
+							name="username"
 							value={userInput.name}
 							className="profile-username-input"
 							placeholder="new username..."
@@ -117,6 +142,7 @@ export function UserProfilePage({
 							}
 						/>
 						<input
+							name="profile-img"
 							value={userInput.profileImg}
 							className="profile-img-input"
 							placeholder="img url..."
@@ -130,13 +156,14 @@ export function UserProfilePage({
 					</>
 				) : (
 					<>
-						<h2>{userData.name}</h2>
+						<h2>{profileData.name}</h2>
 					</>
 				)}
 			</div>
 			{isUser ? (
 				<>
 					<textarea
+						name="about"
 						value={userInput.about}
 						placeholder="write a poem about yourself..."
 						onChange={(e) =>
@@ -148,27 +175,23 @@ export function UserProfilePage({
 					/>
 					<div className="edit-buttons">
 						<button
-							onClick={() => {
-								onSave(userInput);
-							}}
+						 	type="submit"
 							className="hover-btn"
 						>
 							Apply
 						</button>
 						<button
-							onClick={() => {
-								setUserInput(userData);
-								setShowUserProfilePage(null);
-							}}
 							className="hover-btn"
 						>
-							Cancel
+							<Link to={"/"}>
+								Cancel
+							</Link>
 						</button>
 					</div>
 				</>
 			) : (
-				<p>{userData.about}</p>
+				<p>{profileData.about}</p>
 			)}
-		</div>
+		</Form>
 	);
 }
