@@ -58,7 +58,7 @@ export default function App() {
 	let content;
 	if (userData) {
 		const outletCtx = params.userId
-			? [userData.id, userDataHasChanged]
+			? [userData.id, userDataHasChanged, navigate]
 			: [userData, contacts, setContacts, contactsPanelRef, userPanelRef];
 
 		content = (
@@ -110,6 +110,7 @@ export default function App() {
 						updateUsernameCache(null);
 					}}
 					setUserData={setUserData}
+					params={params}
 				/>
 			</div>
 		</DisplayModeCtx>

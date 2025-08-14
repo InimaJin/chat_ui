@@ -4,13 +4,14 @@ import {
 	Link,
 	redirect,
 	useLoaderData,
+	useNavigate,
 	useOutletContext,
 } from "react-router-dom";
 import { DisplayModeCtx } from "../context";
 import { loadUserData, updateUserData, updateUsernameCache } from "../util";
 import { contactsData } from "../data";
 
-export function UserPanel({ ref, userData, setUserData, handleLogout }) {
+export function UserPanel({ ref, userData, setUserData, handleLogout, params }) {
 	const { displayMode, updateDisplayMode } = useContext(DisplayModeCtx);
 
 	let content = null;
@@ -24,7 +25,7 @@ export function UserPanel({ ref, userData, setUserData, handleLogout }) {
 					<i className="bxr  bx-arrow-left-stroke"></i>
 				</button>
 				<Link
-					to={`/user/${userData.name}/${userData.id}`}
+					to={params.username && params.userId ? -1 : `/user/${userData.name}/${userData.id}`}
 					onClick={() => {
 						ref.current.classList.remove("active");
 					}}
@@ -100,11 +101,12 @@ export async function profilePageAction({ params, request }) {
 	updateUserData(params.username, null);
 	updateUserData(updateUser.name, updateUser);
 	updateUsernameCache(updateUser.name);
+
 	return redirect("/");
 }
 
 export function UserProfilePage() {
-	const [userId, userDataChanged] = useOutletContext();
+	const [userId, userDataChanged, navigate] = useOutletContext();
 	const profileData = useLoaderData();
 	const isUser = userId === profileData.id;
 
@@ -180,8 +182,8 @@ export function UserProfilePage() {
 						<button type="submit" className="hover-btn">
 							Apply
 						</button>
-						<button className="hover-btn">
-							<Link to={-1}>Cancel</Link>
+						<button onClick={() => navigate(-1)} type="button" className="hover-btn">
+							Cancel
 						</button>
 					</div>
 				</>
