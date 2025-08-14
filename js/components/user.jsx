@@ -11,8 +11,14 @@ import { DisplayModeCtx } from "../context";
 import { loadUserData, updateUserData, updateUsernameCache } from "../util";
 import { contactsData } from "../data";
 
-export function UserPanel({ ref, userData, setUserData, handleLogout, params }) {
-	const { displayMode, updateDisplayMode } = useContext(DisplayModeCtx);
+export function UserPanel({
+	ref,
+	userData,
+	setUserData,
+	handleLogout,
+	params,
+}) {
+	const displayMode = useContext(DisplayModeCtx);
 
 	let content = null;
 	if (userData) {
@@ -25,7 +31,12 @@ export function UserPanel({ ref, userData, setUserData, handleLogout, params }) 
 					<i className="bxr  bx-arrow-left-stroke"></i>
 				</button>
 				<Link
-					to={params.username && params.userId ? -1 : `/user/${userData.name}/${userData.id}`}
+					aria-label="user profile"
+					to={
+						params.username && params.userId
+							? -1
+							: `/user/${userData.name}/${userData.id}`
+					}
 					onClick={() => {
 						ref.current.classList.remove("active");
 					}}
@@ -36,11 +47,11 @@ export function UserPanel({ ref, userData, setUserData, handleLogout, params }) 
 				</Link>
 				<div className="user-buttons">
 					<button
+						aria-label="toggle display mode"
 						className="hover-btn round-btn"
 						onClick={() => {
 							const nextMode =
 								displayMode === "dark-mode" ? "light-mode" : "dark-mode";
-							updateDisplayMode(nextMode);
 							const nextUserData = {
 								...userData,
 								displayMode: nextMode,
@@ -54,7 +65,11 @@ export function UserPanel({ ref, userData, setUserData, handleLogout, params }) 
 						></i>
 					</button>
 					<Link to={"/"}>
-						<button onClick={handleLogout} className="hover-btn round-btn">
+						<button
+							aria-label="log out"
+							onClick={handleLogout}
+							className="hover-btn round-btn"
+						>
 							<i className="bxr bx-door"></i>
 						</button>
 					</Link>
@@ -182,7 +197,11 @@ export function UserProfilePage() {
 						<button type="submit" className="hover-btn">
 							Apply
 						</button>
-						<button onClick={() => navigate(-1)} type="button" className="hover-btn">
+						<button
+							onClick={() => navigate(-1)}
+							type="button"
+							className="hover-btn"
+						>
 							Cancel
 						</button>
 					</div>

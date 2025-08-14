@@ -91,15 +91,7 @@ export default function App() {
 	const displayMode = userData ? userData.displayMode : "dark-mode";
 
 	return (
-		<DisplayModeCtx
-			value={{
-				displayMode: displayMode,
-				updateDisplayMode: (nextMode) => {
-					const nextData = { ...userData, displayMode: nextMode };
-					setUserData(nextData);
-				},
-			}}
-		>
+		<DisplayModeCtx value={displayMode}>
 			<div className={"main-window " + displayMode}>
 				{content}
 				<UserPanel
