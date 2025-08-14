@@ -1,8 +1,8 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import App from "./App.jsx";
-import { ChatWindow } from "./components/chat.jsx";
+import App, { appLoader } from "./App.jsx";
+import { ChatWindow, chatWindowLoader } from "./components/chat.jsx";
 import {
 	UserProfilePage,
 	profilePageAction,
@@ -13,10 +13,12 @@ import { Login, loginAction } from "./components/login.jsx";
 const router = createBrowserRouter([
 	{
 		path: "/",
+		loader: appLoader,
 		element: <App />,
 		children: [
 			{
-				index: true,
+				path: "chat/:activeContactName",
+				loader: chatWindowLoader,
 				element: <ChatWindow />,
 			},
 			{

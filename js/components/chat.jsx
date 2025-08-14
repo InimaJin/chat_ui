@@ -1,7 +1,7 @@
 import { useRef, useEffect, useState } from "react";
-import { useOutletContext } from "react-router-dom";
+import { useOutletContext, useLoaderData } from "react-router-dom";
 
-import { updateStoredChat } from "../util";
+import { loadStoredChat, updateStoredChat } from "../util";
 
 function scrollToMessage(msg, behavior, block) {
 	msg.scrollIntoView({ behavior: behavior, block: block });
@@ -126,21 +126,24 @@ function Message({ ref, userId, messageObj }) {
 	);
 }
 
+export function chatWindowLoader({ params }) {
+	const contactName = params.activeContactName;
+	return contactName;
+}
+
 /* Window for chat history and text input. */
 export function ChatWindow() {
-	const [
-		userData,
-		activeContactId,
-		chat,
-		setChat,
-		contacts,
-		setContacts,
-		contactsPanelRef,
-		userPanelRef,
-	] = useOutletContext();
+	const [userData, contacts, setContacts, contactsPanelRef, userPanelRef] =
+		useOutletContext();
+
+	const contactName = useLoaderData();
+	const contactData = contacts.find((c) => c.name === contactName);
+	const activeContactId = contactData.id;
+
+	const chat = loadStoredChat(userData.id, activeContactId);
+
 	const latestMessageRef = useRef(null);
 
-	const [scrollDown, setScrollDown] = useState(false);
 	const chatInputRef = useRef(null);
 	useEffect(() => {
 		//Touch devices should not focus automatically
@@ -151,8 +154,6 @@ export function ChatWindow() {
 			scrollToMessage(latestMessageRef.current, "instant", "end");
 		}
 	});
-
-	const contactData = contacts.find((c) => c.id === activeContactId);
 
 	function onTextChange(newText) {
 		const nextContacts = contacts.map((c) => {
@@ -184,10 +185,9 @@ export function ChatWindow() {
 				timestamp: timestamp,
 				text: contactData.replyFn(message),
 			};
-			const nextChat = [...chat, sentMessage, reply];
 
-			setScrollDown(!scrollDown);
-			setChat(nextChat);
+			chat.push(sentMessage, reply);
+
 			updateStoredChat(userData.id, activeContactId, sentMessage, reply);
 			onTextChange("");
 		}

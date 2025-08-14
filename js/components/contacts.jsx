@@ -17,7 +17,6 @@ export function ContactsPanel({
 		return (
 			<Contact
 				key={c.id}
-				panelRef={ref}
 				id={c.id}
 				name={c.name}
 				onSelect={(nextId) => {

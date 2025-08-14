@@ -7,6 +7,7 @@ import {
 	incrementUsersCount,
 	updateUsernameCache,
 } from "../util";
+import { contactsData } from "../data";
 
 export async function loginAction({ request }) {
 	const formData = await request.formData();
@@ -31,7 +32,8 @@ export async function loginAction({ request }) {
 	}
 
 	updateUsernameCache(username);
-	return redirect("/");
+	const firstContact = contactsData[0];
+	return redirect(`/chat/${firstContact.name}`);
 }
 
 export function Login() {

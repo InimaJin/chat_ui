@@ -1,16 +1,30 @@
-import { useState, useRef } from "react";
-import { Outlet, useLocation, useNavigate, useParams } from "react-router-dom";
+import { useState, useRef, useEffect } from "react";
+import {
+	Outlet,
+	redirect,
+	useLocation,
+	useNavigate,
+	useParams,
+} from "react-router-dom";
 
 import { DisplayModeCtx } from "./context.jsx";
 import {
 	loadUserData,
-	loadStoredChat,
 	loadCachedUsername,
 	updateUsernameCache,
 } from "./util.js";
 import { ContactsPanel } from "./components/contacts.jsx";
 import { UserPanel } from "./components/user.jsx";
 import { contactsData } from "./data.js";
+
+export function appLoader({ params }) {
+	const username = loadCachedUsername();
+
+	const activeContactName = params.activeContactName;
+	if (!activeContactName && username) {
+		return redirect(`chat/${contactsData[0].name}`);
+	}
+}
 
 export default function App() {
 	const navigate = useNavigate();
@@ -20,21 +34,16 @@ export default function App() {
 	const [userData, setUserData] = useState(null);
 
 	const [contacts, setContacts] = useState(contactsData);
-	const [activeContactId, setActiveContactId] = useState(-1);
-	const [chat, setChat] = useState([]);
-
-	const [displayMode, setDisplayMode] = useState("dark-mode");
 
 	const loadedData = loadUserData(loadCachedUsername());
 	if (!userData && loadedData) {
 		setUserData(loadedData);
-		setChat(loadStoredChat(loadedData.id, activeContactId));
-		setDisplayMode(loadedData.displayMode);
 	}
 
-	function fetchChat(nextContactId) {
-		const storedChat = loadStoredChat(userData.id, nextContactId);
-		setChat(storedChat);
+	let activeContactId = useRef(-1);
+	const contactName = params.activeContactName;
+	if (contactName) {
+		activeContactId.current = contacts.find((c) => c.name == contactName).id;
 	}
 
 	const contactsPanelRef = useRef(null);
@@ -45,46 +54,45 @@ export default function App() {
 	if (userData) {
 		const outletCtx = params.userId
 			? userData.id
-			: [
-					userData,
-					activeContactId,
-					chat,
-					setChat,
-					contacts,
-					setContacts,
-					contactsPanelRef,
-					userPanelRef,
-				];
+			: [userData, contacts, setContacts, contactsPanelRef, userPanelRef];
 
 		content = (
 			<>
 				<ContactsPanel
 					ref={contactsPanelRef}
 					contactsList={contacts}
-					onContactSelect={(nextContactId) => {
-						if (activeContactId !== nextContactId || params.userId) {
-							fetchChat(nextContactId);
-							setActiveContactId(nextContactId);
-							navigate("/");
+					onContactSelect={(clickedContact) => {
+						const clickedContactData = contacts.find(
+							(c) => c.id === clickedContact
+						);
+
+						if (activeContactId.current !== clickedContact || params.userId) {
+							navigate(`chat/${clickedContactData.name}`);
 						} else {
-							const contact = contacts.find((c) => c.id === activeContactId);
-							navigate(`user/${contact.name}/${activeContactId}`);
+							navigate(
+								`user/${clickedContactData.name}/${activeContactId.current}`
+							);
 						}
 					}}
-					activeContact={activeContactId}
+					activeContact={activeContactId.current}
 				/>
 				<Outlet context={outletCtx} />
 			</>
 		);
 	} else if (showLoginForm) {
-		content = <Outlet context={{ setUserData: setUserData }} />;
+		content = <Outlet />;
 	}
+
+	const displayMode = userData ? userData.displayMode : "dark-mode";
 
 	return (
 		<DisplayModeCtx
 			value={{
 				displayMode: displayMode,
-				setDisplayMode: setDisplayMode,
+				updateDisplayMode: (nextMode) => {
+					const nextData = { ...userData, displayMode: nextMode };
+					setUserData(nextData);
+				},
 			}}
 		>
 			<div className={"main-window " + displayMode}>
@@ -95,7 +103,6 @@ export default function App() {
 					handleLogout={() => {
 						setUserData(null);
 						updateUsernameCache(null);
-						setChat(null);
 					}}
 					setUserData={setUserData}
 				/>

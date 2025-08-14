@@ -11,7 +11,7 @@ import { loadUserData, updateUserData } from "../util";
 import { contactsData } from "../data";
 
 export function UserPanel({ ref, userData, setUserData, handleLogout }) {
-	const { displayMode, setDisplayMode } = useContext(DisplayModeCtx);
+	const { displayMode, updateDisplayMode } = useContext(DisplayModeCtx);
 
 	let content = null;
 	if (userData) {
@@ -39,7 +39,7 @@ export function UserPanel({ ref, userData, setUserData, handleLogout }) {
 						onClick={() => {
 							const nextMode =
 								displayMode === "dark-mode" ? "light-mode" : "dark-mode";
-							setDisplayMode(nextMode);
+							updateDisplayMode(nextMode);
 							const nextUserData = {
 								...userData,
 								displayMode: nextMode,
@@ -103,6 +103,7 @@ export async function profilePageAction({ params, request }) {
 	return redirect("/");
 }
 
+//TODO: Updated changes not visible in profile panel (see profile picture)
 export function UserProfilePage() {
 	const userId = useOutletContext();
 	const profileData = useLoaderData();
@@ -177,7 +178,7 @@ export function UserProfilePage() {
 							Apply
 						</button>
 						<button className="hover-btn">
-							<Link to={"/"}>Cancel</Link>
+							<Link to={-1}>Cancel</Link>
 						</button>
 					</div>
 				</>
