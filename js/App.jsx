@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import {
 	Outlet,
 	redirect,
@@ -32,13 +32,18 @@ export default function App() {
 	const location = useLocation();
 
 	const [userData, setUserData] = useState(null);
+	const loaded = loadUserData(loadCachedUsername());
+	if (!userData && loaded) {
+		setUserData(loaded);
+	}
+
+	const userDataHasChanged = useRef(false);
+	if (userDataHasChanged.current) {
+		userDataHasChanged.current = false;
+		setUserData(loaded);
+	}
 
 	const [contacts, setContacts] = useState(contactsData);
-
-	const loadedData = loadUserData(loadCachedUsername());
-	if (!userData && loadedData) {
-		setUserData(loadedData);
-	}
 
 	let activeContactId = useRef(-1);
 	const contactName = params.activeContactName;
@@ -53,7 +58,7 @@ export default function App() {
 	let content;
 	if (userData) {
 		const outletCtx = params.userId
-			? userData.id
+			? [userData.id, userDataHasChanged]
 			: [userData, contacts, setContacts, contactsPanelRef, userPanelRef];
 
 		content = (

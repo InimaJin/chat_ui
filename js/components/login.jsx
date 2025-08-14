@@ -40,7 +40,7 @@ export function Login() {
 	const [usernameInput, setUsernameInput] = useState("");
 
 	return (
-		<Form method="post" className="login-form">
+		<Form action="/login" method="post" className="login-form">
 			<input
 				name="username"
 				placeholder="username..."

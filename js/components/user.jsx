@@ -7,7 +7,7 @@ import {
 	useOutletContext,
 } from "react-router-dom";
 import { DisplayModeCtx } from "../context";
-import { loadUserData, updateUserData } from "../util";
+import { loadUserData, updateUserData, updateUsernameCache } from "../util";
 import { contactsData } from "../data";
 
 export function UserPanel({ ref, userData, setUserData, handleLogout }) {
@@ -99,13 +99,12 @@ export async function profilePageAction({ params, request }) {
 
 	updateUserData(params.username, null);
 	updateUserData(updateUser.name, updateUser);
-
+	updateUsernameCache(updateUser.name);
 	return redirect("/");
 }
 
-//TODO: Updated changes not visible in profile panel (see profile picture)
 export function UserProfilePage() {
-	const userId = useOutletContext();
+	const [userId, userDataChanged] = useOutletContext();
 	const profileData = useLoaderData();
 	const isUser = userId === profileData.id;
 
@@ -121,7 +120,11 @@ export function UserProfilePage() {
 	}
 
 	return (
-		<Form method="post" className="user-profile-page">
+		<Form
+			onSubmit={() => (userDataChanged.current = !userDataChanged.current)}
+			method="post"
+			className="user-profile-page"
+		>
 			{backButton}
 			<div className="user-profile-edit">
 				<div className="profile-img-wrapper">
