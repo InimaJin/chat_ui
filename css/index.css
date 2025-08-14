@@ -118,6 +118,10 @@ a {
 		color: black;
 	}
 
+	.user-profile h2 {
+		color: black;
+	}
+
 	.user-profile-page {
 		input,
 		textarea,
